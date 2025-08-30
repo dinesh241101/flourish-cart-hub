@@ -1,68 +1,38 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lock, User, Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({
-    username: '',
+    email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const { login, user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/admin/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Demo credentials for testing
-    const ADMIN_CREDENTIALS = {
-      username: 'admin@bmsstore.com',
-      password: 'BMS@2024'
-    };
-
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      if (
-        credentials.username === ADMIN_CREDENTIALS.username &&
-        credentials.password === ADMIN_CREDENTIALS.password
-      ) {
-        toast({
-          title: "Login Successful!",
-          description: "Welcome to BMS Store Admin Panel",
-        });
-        
-        // Store admin session
-        localStorage.setItem('isAdminLoggedIn', 'true');
-        localStorage.setItem('adminUser', JSON.stringify({
-          username: credentials.username,
-          loginTime: new Date().toISOString()
-        }));
-
-        // Navigate to admin dashboard
-        console.log('Redirecting to admin dashboard...');
-        // In a real app, you'd use router.push('/admin/dashboard')
-
-      } else {
-        toast({
-          title: "Login Failed",
-          description: "Invalid username or password",
-          variant: "destructive",
-        });
+      const success = await login(credentials.email, credentials.password);
+      if (success) {
+        navigate('/admin/dashboard');
       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An error occurred during login",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -87,15 +57,15 @@ const AdminLogin = () => {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username / Email</Label>
+              <Label htmlFor="email">Email</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                  id="username"
-                  type="text"
-                  placeholder="Enter your username"
-                  value={credentials.username}
-                  onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={credentials.email}
+                  onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
                   className="pl-10"
                   required
                 />
@@ -127,7 +97,7 @@ const AdminLogin = () => {
 
             <Button 
               type="submit" 
-              className="w-full btn-primary" 
+              className="w-full" 
               disabled={isLoading}
             >
               {isLoading ? 'Signing In...' : 'Sign In'}
@@ -138,7 +108,7 @@ const AdminLogin = () => {
           <div className="mt-6 p-4 bg-muted rounded-lg">
             <h4 className="font-semibold text-sm mb-2">Demo Credentials:</h4>
             <div className="text-sm text-muted-foreground space-y-1">
-              <p><strong>Username:</strong> admin@bmsstore.com</p>
+              <p><strong>Email:</strong> admin@bmsstore.com</p>
               <p><strong>Password:</strong> BMS@2024</p>
             </div>
           </div>
