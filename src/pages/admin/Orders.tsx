@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
 interface Order {
   id: string;
   order_number: string;
@@ -31,7 +33,7 @@ interface Order {
   total_amount: number;
   final_amount: number;
   discount_amount: number;
-  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: OrderStatus;
   created_at: string;
   shipping_address: string;
   estimated_delivery_date: string | null;
@@ -40,12 +42,12 @@ interface Order {
 const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | OrderStatus>('all');
   const { toast } = useToast();
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [statusFilter]);
 
   const fetchOrders = async () => {
     try {
@@ -74,7 +76,7 @@ const Orders = () => {
     }
   };
 
-  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+  const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
     try {
       const { error } = await supabase
         .from('orders')
@@ -99,7 +101,7 @@ const Orders = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status: OrderStatus) => {
     switch (status) {
       case 'pending':
         return <Clock className="h-4 w-4" />;
@@ -117,21 +119,21 @@ const Orders = () => {
     }
   };
 
-  const getStatusVariant = (status: string) => {
+  const getStatusVariant = (status: OrderStatus) => {
     switch (status) {
       case 'pending':
-        return 'secondary';
+        return 'secondary' as const;
       case 'confirmed':
       case 'processing':
-        return 'default';
+        return 'default' as const;
       case 'shipped':
-        return 'default';
+        return 'default' as const;
       case 'delivered':
-        return 'default';
+        return 'default' as const;
       case 'cancelled':
-        return 'destructive';
+        return 'destructive' as const;
       default:
-        return 'secondary';
+        return 'secondary' as const;
     }
   };
 
@@ -153,7 +155,7 @@ const Orders = () => {
   const statusCounts = orders.reduce((acc, order) => {
     acc[order.status] = (acc[order.status] || 0) + 1;
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<OrderStatus, number>);
 
   return (
     <div className="space-y-6">
@@ -162,7 +164,7 @@ const Orders = () => {
           <ShoppingCart className="h-8 w-8 text-primary" />
           <h1 className="text-3xl font-bold">Orders</h1>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as 'all' | OrderStatus)}>
           <SelectTrigger className="w-48">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
@@ -188,7 +190,7 @@ const Orders = () => {
           </CardContent>
         </Card>
         
-        {['pending', 'confirmed', 'processing', 'shipped', 'delivered'].map((status) => (
+        {(['pending', 'confirmed', 'processing', 'shipped', 'delivered'] as OrderStatus[]).map((status) => (
           <Card key={status}>
             <CardContent className="p-4">
               <div className="text-center">
@@ -260,7 +262,7 @@ const Orders = () => {
                       </Button>
                       <Select
                         value={order.status}
-                        onValueChange={(value) => updateOrderStatus(order.id, value)}
+                        onValueChange={(value) => updateOrderStatus(order.id, value as OrderStatus)}
                       >
                         <SelectTrigger className="w-32">
                           <SelectValue />
