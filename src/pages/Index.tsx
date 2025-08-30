@@ -5,83 +5,84 @@ import HeroSection from '@/components/HeroSection';
 import CategoryCard from '@/components/CategoryCard';
 import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Zap, Shield, Truck } from 'lucide-react';
+import { ArrowRight, Zap, Shield, Truck, Star, Heart, Award } from 'lucide-react';
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  // Mock data - in real app this would come from your database
+  // Fashion-focused categories
   const categories = [
     {
-      id: 'electronics',
-      name: 'Electronics',
-      description: 'Latest gadgets and tech accessories',
-      image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=400&fit=crop',
-      productCount: 124
+      id: 'women-fashion',
+      name: 'Women\'s Fashion',
+      description: 'Trendy dresses, tops, and accessories for modern women',
+      image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=400&fit=crop',
+      productCount: 245
     },
     {
-      id: 'fashion',
-      name: 'Fashion',
-      description: 'Trendy clothing and accessories',
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
-      productCount: 89
+      id: 'men-fashion',
+      name: 'Men\'s Fashion', 
+      description: 'Stylish shirts, pants, and accessories for men',
+      image: 'https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=400&h=400&fit=crop',
+      productCount: 189
     },
     {
-      id: 'home',
-      name: 'Home & Living',
-      description: 'Beautiful home décor and furniture',
-      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop',
-      productCount: 156
+      id: 'accessories',
+      name: 'Accessories',
+      description: 'Bags, jewelry, watches, and fashion accessories',
+      image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=400&fit=crop',
+      productCount: 167
     },
     {
-      id: 'sports',
-      name: 'Sports & Fitness',
-      description: 'Equipment for an active lifestyle',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop',
-      productCount: 67
+      id: 'footwear',
+      name: 'Footwear',
+      description: 'Comfortable and stylish shoes for every occasion',
+      image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop',
+      productCount: 134
     }
   ];
 
+  // Fashion products
   const featuredProducts = [
     {
       id: '1',
-      name: 'Premium Wireless Headphones',
-      code: 'BMS-001',
-      actualPrice: 5999,
-      sellingPrice: 4499,
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
-      category: 'Electronics',
+      name: 'Elegant Summer Dress',
+      code: 'BMS-WD001',
+      actualPrice: 2999,
+      sellingPrice: 2299,
+      image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop',
+      category: 'Women\'s Fashion',
       inStock: true,
       isNew: true
     },
     {
       id: '2',
-      name: 'Smart Fitness Tracker',
-      code: 'BMS-002',
+      name: 'Classic Denim Jacket',
+      code: 'BMS-DJ002',
       actualPrice: 3499,
       sellingPrice: 2799,
-      image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop',
-      category: 'Sports & Fitness',
+      image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop',
+      category: 'Men\'s Fashion',
       inStock: true
     },
     {
       id: '3',
-      name: 'Designer Coffee Mug Set',
-      code: 'BMS-003',
-      actualPrice: 1299,
-      sellingPrice: 999,
-      image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400&h=400&fit=crop',
-      category: 'Home & Living',
+      name: 'Designer Handbag',
+      code: 'BMS-HB003',
+      actualPrice: 4999,
+      sellingPrice: 3999,
+      image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=400&fit=crop',
+      category: 'Accessories',
       inStock: true
     },
     {
       id: '4',
-      name: 'Casual Cotton T-Shirt',
-      code: 'BMS-004',
-      actualPrice: 999,
-      sellingPrice: 749,
-      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop',
-      category: 'Fashion',
+      name: 'Casual Sneakers',
+      code: 'BMS-SN004',
+      actualPrice: 2499,
+      sellingPrice: 1999,
+      image: 'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400&h=400&fit=crop',
+      category: 'Footwear',
       inStock: false
     }
   ];
@@ -110,7 +111,7 @@ const Index = () => {
               Shop by Category
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Discover our wide range of products across different categories, each carefully curated for quality and value.
+              Discover our curated collection of fashion categories, each designed to help you express your unique style.
             </p>
           </div>
 
@@ -129,7 +130,7 @@ const Index = () => {
 
           <div className="text-center">
             <Button variant="outline" className="group">
-              View All Categories
+              Explore All Collections
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
@@ -141,10 +142,10 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">
-              Featured Products
+              Trending Now
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Check out our most popular and trending products, loved by customers worldwide.
+              Stay ahead of fashion trends with our handpicked selection of the most popular and stylish pieces.
             </p>
           </div>
 
@@ -159,46 +160,70 @@ const Index = () => {
           </div>
 
           <div className="text-center">
-            <Button className="btn-accent group">
-              View All Products
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground group">
+              Shop All Products
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Fashion Features Section */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 animate-fade-in">
-              <div className="bg-accent/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-8 w-8 text-accent" />
+              <div className="bg-pink-500/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Heart className="h-8 w-8 text-pink-500" />
               </div>
-              <h3 className="text-xl font-semibold text-primary mb-2">Fast Delivery</h3>
+              <h3 className="text-xl font-semibold text-primary mb-2">Curated Collections</h3>
               <p className="text-muted-foreground">
-                Quick and reliable delivery to your doorstep within 24-48 hours.
+                Handpicked fashion pieces by our style experts to keep you looking trendy and elegant.
               </p>
             </div>
             
             <div className="text-center p-6 animate-fade-in">
-              <div className="bg-success/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-8 w-8 text-success" />
+              <div className="bg-purple-500/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Award className="h-8 w-8 text-purple-500" />
               </div>
-              <h3 className="text-xl font-semibold text-primary mb-2">Quality Assured</h3>
+              <h3 className="text-xl font-semibold text-primary mb-2">Premium Quality</h3>
               <p className="text-muted-foreground">
-                All products are quality checked and come with manufacturer warranty.
+                Only the finest materials and craftsmanship go into every piece in our collection.
               </p>
             </div>
             
             <div className="text-center p-6 animate-fade-in">
-              <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Truck className="h-8 w-8 text-primary" />
+              <div className="bg-green-500/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Star className="h-8 w-8 text-green-500" />
               </div>
-              <h3 className="text-xl font-semibold text-primary mb-2">Free Shipping</h3>
+              <h3 className="text-xl font-semibold text-primary mb-2">Customer Satisfaction</h3>
               <p className="text-muted-foreground">
-                Enjoy free shipping on orders above ₹999 across India.
+                4.9/5 rating from thousands of happy customers who love our fashion and service.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="py-16 bg-accent/5">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-primary mb-4">
+              Stay Fashion Forward
+            </h2>
+            <p className="text-muted-foreground mb-8">
+              Subscribe to our newsletter and be the first to know about new arrivals, exclusive offers, and fashion tips.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
+              />
+              <Button className="bg-accent hover:bg-accent/90 text-accent-foreground px-8">
+                Subscribe
+              </Button>
             </div>
           </div>
         </div>
@@ -213,20 +238,20 @@ const Index = () => {
                 <div className="bg-accent text-accent-foreground rounded-lg p-2 font-bold text-xl">
                   BMS
                 </div>
-                <h3 className="text-xl font-bold">Store</h3>
+                <h3 className="text-xl font-bold">Fashion</h3>
               </div>
               <p className="text-primary-foreground/80">
-                Your trusted partner for quality products and exceptional shopping experience.
+                Your premier destination for trendy fashion and lifestyle products that elevate your style.
               </p>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-primary-foreground/80">
-                <li><a href="#" className="hover:text-accent transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">FAQ</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Shipping Info</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">New Arrivals</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Sale</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Size Guide</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Returns</a></li>
               </ul>
             </div>
             
@@ -244,18 +269,18 @@ const Index = () => {
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Contact Info</h4>
+              <h4 className="font-semibold mb-4">Contact</h4>
               <div className="space-y-2 text-primary-foreground/80">
-                <p>📧 support@bmsstore.com</p>
+                <p>📧 hello@bmsfashion.com</p>
                 <p>📞 +91 98765 43210</p>
-                <p>📍 Mumbai, Maharashtra, India</p>
-                <p>🕒 Mon-Sat: 9AM-7PM</p>
+                <p>📍 Mumbai, Maharashtra</p>
+                <p>🕒 Mon-Sat: 10AM-8PM</p>
               </div>
             </div>
           </div>
           
           <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/60">
-            <p>&copy; 2024 BMS Store. All rights reserved.</p>
+            <p>&copy; 2024 BMS Fashion Store. All rights reserved. | Follow the latest trends with us!</p>
           </div>
         </div>
       </footer>

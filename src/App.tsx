@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -11,6 +10,11 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Categories from "./pages/admin/Categories";
+import Products from "./pages/admin/Products";
+import Orders from "./pages/admin/Orders";
+import Customers from "./pages/admin/Customers";
+import Offers from "./pages/admin/Offers";
+import Settings from "./pages/admin/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -41,6 +45,11 @@ const App = () => {
                   <Route index element={<Navigate to="/admin/dashboard" replace />} />
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="categories" element={<Categories />} />
+                  <Route path="products" element={<Products />} />
+                  <Route path="orders" element={<Orders />} />
+                  <Route path="customers" element={<Customers />} />
+                  <Route path="offers" element={<Offers />} />
+                  <Route path="settings" element={<Settings />} />
                 </Route>
                 
                 {/* Catch all route */}
