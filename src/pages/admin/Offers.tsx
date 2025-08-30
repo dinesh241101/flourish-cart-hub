@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit, Eye, EyeOff, Percent, Calendar } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, Percent } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -173,6 +173,31 @@ const Offers = () => {
       toast({
         title: "Error",
         description: "Failed to update offer status",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteOffer = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('offers')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Offer deleted successfully",
+      });
+      
+      fetchOffers();
+    } catch (error) {
+      console.error('Error deleting offer:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete offer",
         variant: "destructive",
       });
     }
@@ -436,6 +461,13 @@ const Offers = () => {
                       onClick={() => toggleOfferStatus(offer.id, offer.is_active)}
                     >
                       {offer.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => deleteOffer(offer.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </TableCell>
                 </TableRow>

@@ -189,6 +189,31 @@ const Products = () => {
     }
   };
 
+  const deleteProduct = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Product deleted successfully",
+      });
+      
+      fetchProducts();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete product",
+        variant: "destructive",
+      });
+    }
+  };
+
   const openEditDialog = (product: Product) => {
     setEditingProduct(product);
     setFormData({
@@ -391,6 +416,13 @@ const Products = () => {
                       onClick={() => toggleProductStatus(product.id, product.is_active)}
                     >
                       {product.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => deleteProduct(product.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </TableCell>
                 </TableRow>

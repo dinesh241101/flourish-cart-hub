@@ -150,6 +150,31 @@ const Categories = () => {
     }
   };
 
+  const deleteCategory = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Category deleted successfully",
+      });
+      
+      fetchCategories();
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete category",
+        variant: "destructive",
+      });
+    }
+  };
+
   const openEditDialog = (category: Category) => {
     setEditingCategory(category);
     setFormData({
@@ -288,6 +313,13 @@ const Categories = () => {
                       onClick={() => toggleCategoryStatus(category.id, category.is_active)}
                     >
                       {category.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => deleteCategory(category.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </TableCell>
                 </TableRow>
