@@ -95,7 +95,7 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <HeroSection images={heroImages} />
+      <HeroSection />
 
       {/* Active Offers */}
       {offers.length > 0 && (
@@ -158,8 +158,8 @@ const Index = () => {
               <p className="text-sm text-muted-foreground">Check back soon for new arrivals!</p>
             </div>
           )}
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Newsletter Section */}
       <section className="py-16 px-4 bg-primary text-primary-foreground">
