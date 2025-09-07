@@ -40,11 +40,11 @@ interface Offer {
   offer_type: 'percentage' | 'fixed_amount';
   discount_value: number;
   min_order_amount: number;
-  max_discount_amount: number | null;
+  max_discount_amount?: number | null;
   start_date: string;
   end_date: string;
-  usage_limit: number | null;
-  used_count: number;
+  usage_limit?: number | null;
+  used_count?: number;
   is_active: boolean;
   created_at: string;
 }
@@ -79,7 +79,13 @@ const Offers = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setOffers(data || []);
+      setOffers((data || []).map(offer => ({
+        ...offer,
+        offer_type: offer.offer_type as 'percentage' | 'fixed_amount',
+        used_count: 0,
+        max_discount_amount: null,
+        usage_limit: null
+      })));
     } catch (error) {
       console.error('Error fetching offers:', error);
       toast({

@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_summary: {
+        Row: {
+          created_at: string | null
+          date: string
+          delivered_orders: number | null
+          profit: number | null
+          total_customers: number | null
+          total_orders: number | null
+          total_sales: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          delivered_orders?: number | null
+          profit?: number | null
+          total_customers?: number | null
+          total_orders?: number | null
+          total_sales?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          delivered_orders?: number | null
+          profit?: number | null
+          total_customers?: number | null
+          total_orders?: number | null
+          total_sales?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -130,39 +163,105 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          order_id: string | null
+          price_per_item: number | null
+          product_id: string | null
+          quantity: number | null
+          total_price: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          order_id?: string | null
+          price_per_item?: number | null
+          product_id?: string | null
+          quantity?: number | null
+          total_price?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          order_id?: string | null
+          price_per_item?: number | null
+          product_id?: string | null
+          quantity?: number | null
+          total_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
+          admin_notes: string | null
+          city: string | null
           created_at: string
           customer_id: string | null
+          delivered_at: string | null
           discount_amount: number
           final_amount: number
           id: string
+          payment_status: string | null
+          payment_type: string | null
+          processed_at: string | null
           status: string
           subtotal: number
           tax_amount: number
           updated_at: string
+          whatsapp_sent: boolean | null
         }
         Insert: {
+          admin_notes?: string | null
+          city?: string | null
           created_at?: string
           customer_id?: string | null
+          delivered_at?: string | null
           discount_amount?: number
           final_amount?: number
           id?: string
+          payment_status?: string | null
+          payment_type?: string | null
+          processed_at?: string | null
           status?: string
           subtotal?: number
           tax_amount?: number
           updated_at?: string
+          whatsapp_sent?: boolean | null
         }
         Update: {
+          admin_notes?: string | null
+          city?: string | null
           created_at?: string
           customer_id?: string | null
+          delivered_at?: string | null
           discount_amount?: number
           final_amount?: number
           id?: string
+          payment_status?: string | null
+          payment_type?: string | null
+          processed_at?: string | null
           status?: string
           subtotal?: number
           tax_amount?: number
           updated_at?: string
+          whatsapp_sent?: boolean | null
         }
         Relationships: [
           {
@@ -176,46 +275,73 @@ export type Database = {
       }
       products: {
         Row: {
+          base_price: number
           category_id: string | null
+          cloth_type: string | null
           code: string | null
           compare_price: number | null
           created_at: string
           description: string | null
+          features: string[] | null
           id: string
           image_url: string | null
+          images: string[] | null
           is_active: boolean
+          mrp: number | null
           name: string
-          price: number
+          product_type: string | null
+          sale_price: number | null
+          similar_products: string[] | null
+          sku_code: string | null
           stock_quantity: number
           updated_at: string
+          videos: string[] | null
         }
         Insert: {
+          base_price?: number
           category_id?: string | null
+          cloth_type?: string | null
           code?: string | null
           compare_price?: number | null
           created_at?: string
           description?: string | null
+          features?: string[] | null
           id?: string
           image_url?: string | null
+          images?: string[] | null
           is_active?: boolean
+          mrp?: number | null
           name: string
-          price?: number
+          product_type?: string | null
+          sale_price?: number | null
+          similar_products?: string[] | null
+          sku_code?: string | null
           stock_quantity?: number
           updated_at?: string
+          videos?: string[] | null
         }
         Update: {
+          base_price?: number
           category_id?: string | null
+          cloth_type?: string | null
           code?: string | null
           compare_price?: number | null
           created_at?: string
           description?: string | null
+          features?: string[] | null
           id?: string
           image_url?: string | null
+          images?: string[] | null
           is_active?: boolean
+          mrp?: number | null
           name?: string
-          price?: number
+          product_type?: string | null
+          sale_price?: number | null
+          similar_products?: string[] | null
+          sku_code?: string | null
           stock_quantity?: number
           updated_at?: string
+          videos?: string[] | null
         }
         Relationships: [
           {
@@ -226,6 +352,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      website_config: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          key: string
+          updated_at: string | null
+          value: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          key: string
+          updated_at?: string | null
+          value?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          key?: string
+          updated_at?: string | null
+          value?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {

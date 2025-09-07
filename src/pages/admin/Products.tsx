@@ -38,11 +38,19 @@ interface Product {
   name: string;
   code: string;
   description: string | null;
-  actual_price: number;
-  selling_price: number;
+  mrp: number;
+  sale_price: number;
+  base_price: number;
   stock_quantity: number;
   is_active: boolean;
   category_id: string | null;
+  images: string[] | null;
+  videos: string[] | null;
+  product_type: string | null;
+  sku_code: string | null;
+  cloth_type: string | null;
+  features: string[] | null;
+  similar_products: string[] | null;
   created_at: string;
   categories?: { name: string };
 }
@@ -62,10 +70,18 @@ const Products = () => {
     name: '',
     code: '',
     description: '',
-    actual_price: 0,
-    selling_price: 0,
+    mrp: 0,
+    sale_price: 0,
+    base_price: 0,
     stock_quantity: 0,
-    category_id: ''
+    category_id: '',
+    images: [''],
+    videos: [''],
+    product_type: '',
+    sku_code: '',
+    cloth_type: '',
+    features: [''],
+    similar_products: []
   });
   const { toast } = useToast();
 
@@ -120,9 +136,14 @@ const Products = () => {
       const productData = {
         ...formData,
         category_id: formData.category_id || null,
-        actual_price: Number(formData.actual_price),
-        selling_price: Number(formData.selling_price),
-        stock_quantity: Number(formData.stock_quantity)
+        mrp: Number(formData.mrp),
+        sale_price: Number(formData.sale_price),
+        base_price: Number(formData.base_price),
+        stock_quantity: Number(formData.stock_quantity),
+        images: formData.images.filter(img => img.trim() !== ''),
+        videos: formData.videos.filter(vid => vid.trim() !== ''),
+        features: formData.features.filter(feat => feat.trim() !== ''),
+        similar_products: formData.similar_products
       };
 
       if (editingProduct) {
@@ -152,7 +173,7 @@ const Products = () => {
 
       setIsDialogOpen(false);
       setEditingProduct(null);
-      setFormData({ name: '', code: '', description: '', actual_price: 0, selling_price: 0, stock_quantity: 0, category_id: '' });
+      setFormData({ name: '', code: '', description: '', mrp: 0, sale_price: 0, base_price: 0, stock_quantity: 0, category_id: '', images: [''], videos: [''], product_type: '', sku_code: '', cloth_type: '', features: [''], similar_products: [] });
       fetchProducts();
     } catch (error) {
       console.error('Error saving product:', error);
@@ -220,17 +241,41 @@ const Products = () => {
       name: product.name,
       code: product.code,
       description: product.description || '',
-      actual_price: product.actual_price,
-      selling_price: product.selling_price,
+      mrp: product.mrp,
+      sale_price: product.sale_price,
+      base_price: product.base_price,
       stock_quantity: product.stock_quantity,
-      category_id: product.category_id || ''
+      category_id: product.category_id || '',
+      images: product.images || [''],
+      videos: product.videos || [''],
+      product_type: product.product_type || '',
+      sku_code: product.sku_code || '',
+      cloth_type: product.cloth_type || '',
+      features: product.features || [''],
+      similar_products: product.similar_products || []
     });
     setIsDialogOpen(true);
   };
 
   const openCreateDialog = () => {
     setEditingProduct(null);
-    setFormData({ name: '', code: '', description: '', actual_price: 0, selling_price: 0, stock_quantity: 0, category_id: '' });
+    setFormData({ 
+      name: '', 
+      code: '', 
+      description: '', 
+      mrp: 0, 
+      sale_price: 0, 
+      base_price: 0, 
+      stock_quantity: 0, 
+      category_id: '',
+      images: [''],
+      videos: [''],
+      product_type: '',
+      sku_code: '',
+      cloth_type: '',
+      features: [''],
+      similar_products: []
+    });
     setIsDialogOpen(true);
   };
 
@@ -316,28 +361,40 @@ const Products = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="actual_price">Actual Price (₹)</Label>
-                  <Input
-                    id="actual_price"
-                    type="number"
-                    step="0.01"
-                    value={formData.actual_price}
-                    onChange={(e) => setFormData({ ...formData, actual_price: Number(e.target.value) })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="selling_price">Selling Price (₹)</Label>
-                  <Input
-                    id="selling_price"
-                    type="number"
-                    step="0.01"
-                    value={formData.selling_price}
-                    onChange={(e) => setFormData({ ...formData, selling_price: Number(e.target.value) })}
-                    required
-                  />
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="mrp">MRP (₹)</Label>
+                    <Input
+                      id="mrp"
+                      type="number"
+                      step="0.01"
+                      value={formData.mrp}
+                      onChange={(e) => setFormData({ ...formData, mrp: Number(e.target.value) })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="sale_price">Sale Price (₹)</Label>
+                    <Input
+                      id="sale_price"
+                      type="number"
+                      step="0.01"
+                      value={formData.sale_price}
+                      onChange={(e) => setFormData({ ...formData, sale_price: Number(e.target.value) })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="base_price">Base Price (₹)</Label>
+                    <Input
+                      id="base_price"
+                      type="number"
+                      step="0.01"
+                      value={formData.base_price}
+                      onChange={(e) => setFormData({ ...formData, base_price: Number(e.target.value) })}
+                      required
+                    />
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="stock_quantity">Stock Quantity</Label>
@@ -349,7 +406,6 @@ const Products = () => {
                     required
                   />
                 </div>
-              </div>
               <Button type="submit" className="w-full">
                 {editingProduct ? 'Update Product' : 'Create Product'}
               </Button>
@@ -384,10 +440,10 @@ const Products = () => {
                   <TableCell>{product.categories?.name || 'No category'}</TableCell>
                   <TableCell>
                     <div className="space-y-1">
-                      <div className="text-sm">₹{product.selling_price}</div>
-                      {product.actual_price !== product.selling_price && (
+                      <div className="text-sm">₹{product.sale_price}</div>
+                      {product.mrp > product.sale_price && (
                         <div className="text-xs text-muted-foreground line-through">
-                          ₹{product.actual_price}
+                          ₹{product.mrp}
                         </div>
                       )}
                     </div>

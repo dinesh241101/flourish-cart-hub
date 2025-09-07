@@ -20,8 +20,10 @@ const AdminSidebar = () => {
     { path: '/admin/categories', icon: FolderTree, label: 'Categories' },
     { path: '/admin/products', icon: Package, label: 'Products' },
     { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
+    { path: '/admin/processed-orders', icon: Tags, label: 'Processed Orders' },
     { path: '/admin/customers', icon: Users, label: 'Customers' },
     { path: '/admin/offers', icon: Percent, label: 'Offers' },
+    { path: '/admin/analytics', icon: LayoutDashboard, label: 'Analytics' },
     { path: '/admin/settings', icon: Settings, label: 'Settings' },
   ];
 

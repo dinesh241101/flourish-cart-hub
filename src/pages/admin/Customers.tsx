@@ -18,12 +18,10 @@ interface Customer {
   id: string;
   name: string;
   email: string | null;
-  phone: string;
+  phone: string | null;
   address: string | null;
-  city: string | null;
-  state: string | null;
-  pincode: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 const Customers = () => {
@@ -163,14 +161,7 @@ const Customers = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {customer.city && customer.state ? (
-                      <div className="text-sm">
-                        <div>{customer.city}, {customer.state}</div>
-                        {customer.pincode && <div className="text-muted-foreground">{customer.pincode}</div>}
-                      </div>
-                    ) : (
-                      <span className="text-muted-foreground">No location</span>
-                    )}
+                    <span className="text-muted-foreground">{customer.address || 'No address'}</span>
                   </TableCell>
                   <TableCell>
                     {new Date(customer.created_at).toLocaleDateString()}

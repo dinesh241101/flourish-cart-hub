@@ -22,21 +22,30 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+type OrderStatus = 'pending' | 'confirmed' | 'accepted' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
 interface Order {
   id: string;
-  order_number: string;
-  customer_name: string;
-  customer_phone: string;
-  customer_email: string | null;
-  total_amount: number;
-  final_amount: number;
-  discount_amount: number;
+  customer_id: string | null;
   status: OrderStatus;
+  payment_type: string;
+  payment_status: string;
+  city: string | null;
+  admin_notes: string | null;
+  whatsapp_sent: boolean;
+  processed_at: string | null;
+  delivered_at: string | null;
+  subtotal: number;
+  tax_amount: number;
+  discount_amount: number;
+  final_amount: number;
   created_at: string;
-  shipping_address: string;
-  estimated_delivery_date: string | null;
+  updated_at: string;
+  customers?: {
+    name: string;
+    email: string | null;
+    phone: string | null;
+  };
 }
 
 const Orders = () => {
@@ -53,7 +62,10 @@ const Orders = () => {
     try {
       let query = supabase
         .from('orders')
-        .select('*')
+        .select(`
+          *,
+          customers (name, email, phone)
+        `)
         .order('created_at', { ascending: false });
 
       if (statusFilter !== 'all') {
@@ -63,7 +75,11 @@ const Orders = () => {
       const { data, error } = await query;
 
       if (error) throw error;
-      setOrders(data || []);
+      setOrders((data || []).map(order => ({
+        ...order,
+        status: order.status as OrderStatus,
+        customers: order.customers || null
+      })));
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({
@@ -171,6 +187,7 @@ const Orders = () => {
           <SelectContent>
             <SelectItem value="all">All Orders</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="accepted">Accepted</SelectItem>
             <SelectItem value="confirmed">Confirmed</SelectItem>
             <SelectItem value="processing">Processing</SelectItem>
             <SelectItem value="shipped">Shipped</SelectItem>
@@ -190,7 +207,7 @@ const Orders = () => {
           </CardContent>
         </Card>
         
-        {(['pending', 'confirmed', 'processing', 'shipped', 'delivered'] as OrderStatus[]).map((status) => (
+        {(['pending', 'accepted', 'confirmed', 'processing', 'shipped', 'delivered'] as OrderStatus[]).map((status) => (
           <Card key={status}>
             <CardContent className="p-4">
               <div className="text-center">
@@ -224,16 +241,16 @@ const Orders = () => {
                 <TableRow key={order.id}>
                   <TableCell>
                     <div>
-                      <div className="font-medium">#{order.order_number}</div>
+                      <div className="font-medium">#{order.id.slice(0, 8)}</div>
                       <div className="text-sm text-muted-foreground">
-                        {order.shipping_address.substring(0, 30)}...
+                        {order.customers?.name || 'Unknown'}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{order.customer_name}</div>
-                      <div className="text-sm text-muted-foreground">{order.customer_phone}</div>
+                      <div className="font-medium">{order.customers?.name || 'Unknown'}</div>
+                      <div className="text-sm text-muted-foreground">{order.customers?.phone || 'N/A'}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -269,11 +286,12 @@ const Orders = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="accepted">Accept</SelectItem>
                           <SelectItem value="confirmed">Confirmed</SelectItem>
                           <SelectItem value="processing">Processing</SelectItem>
                           <SelectItem value="shipped">Shipped</SelectItem>
                           <SelectItem value="delivered">Delivered</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                          <SelectItem value="cancelled">Cancel</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
