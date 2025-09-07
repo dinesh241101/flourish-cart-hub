@@ -59,23 +59,6 @@ const Index = () => {
     }
   };
 
-  const heroImages = [
-    {
-      url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      title: "Fashion Trends 2024",
-      subtitle: "Discover the Latest Collections"
-    },
-    {
-      url: "https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
-      title: "Summer Collection",
-      subtitle: "Light, Breezy & Stylish"
-    },
-    {
-      url: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      title: "Luxury Fashion",
-      subtitle: "Premium Quality & Design"
-    }
-  ];
 
   if (isLoading) {
     return (
