@@ -53,12 +53,9 @@ const ProcessedOrders = () => {
     fetchProcessedOrders();
   }, []);
 
-  useEffect(() => {
-    applyFilters();
-  }, [orders, filters]);
-
   const fetchProcessedOrders = async () => {
     try {
+      setIsLoading(true);
       const { data, error } = await supabase
         .from('orders')
         .select(`
@@ -71,6 +68,7 @@ const ProcessedOrders = () => {
 
       if (error) throw error;
       setOrders(data || []);
+      setFilteredOrders(data || []);
     } catch (error) {
       console.error('Error fetching processed orders:', error);
       toast({
@@ -105,9 +103,18 @@ const ProcessedOrders = () => {
     setFilteredOrders(filtered);
   };
 
+  const resetFilters = () => {
+    setFilters({
+      paymentType: 'all',
+      city: [],
+      minAmount: '',
+      maxAmount: ''
+    });
+    setFilteredOrders(orders);
+  };
+
   const generateExcel = async () => {
     try {
-      // Create CSV content
       const headers = ['Order ID', 'Customer Name', 'Phone', 'Address', 'City', 'Amount', 'Payment Type', 'Processed Date'];
       const csvContent = [
         headers.join(','),
@@ -123,7 +130,6 @@ const ProcessedOrders = () => {
         ].join(','))
       ].join('\n');
 
-      // Create and download file
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -146,18 +152,6 @@ const ProcessedOrders = () => {
         variant: "destructive",
       });
     }
-  };
-
-  const getUniqueValues = (key: string) => {
-    const values: string[] = [];
-    orders.forEach(order => {
-      if (key === 'city' && order.city) {
-        values.push(order.city);
-      } else if (key === 'payment_type' && order.payment_type) {
-        values.push(order.payment_type);
-      }
-    });
-    return [...new Set(values)].filter(Boolean);
   };
 
   if (isLoading) {
@@ -256,70 +250,61 @@ const ProcessedOrders = () => {
               </Select>
             </div>
 
+            {/* Cities Multi-select */}
             <div>
-  <label className="text-sm font-medium mb-2 block">Cities</label>
-  <Select>
-    <SelectTrigger>
-      <SelectValue
-        placeholder={
-          filters.city.length > 0
-            ? filters.city.join(", ")
-            : "Select Cities"
-        }
-      />
-    </SelectTrigger>
-    <SelectContent className="max-h-[300px] overflow-y-auto">
-      {/* All Cities option */}
-      <div
-        className="flex items-center space-x-2 px-2 py-1 cursor-pointer"
-        onClick={() => setFilters({ ...filters, city: [] })}
-      >
-        <input
-          type="checkbox"
-          checked={filters.city.length === 0}
-          readOnly
-        />
-        <span>All Cities</span>
-      </div>
+              <label className="text-sm font-medium mb-2 block">Cities</label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder={
+                      filters.city.length > 0
+                        ? filters.city.join(", ")
+                        : "Select Cities"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px] overflow-y-auto">
+                  <div
+                    className="flex items-center space-x-2 px-2 py-1 cursor-pointer"
+                    onClick={() => setFilters({ ...filters, city: [] })}
+                  >
+                    <input type="checkbox" checked={filters.city.length === 0} readOnly />
+                    <span>All Cities</span>
+                  </div>
 
-      {/* City list with checkboxes */}
-      {[
-        "Mumbai","Delhi","Bengaluru","Hyderabad","Ahmedabad","Chennai","Kolkata",
-        "Pune","Jaipur","Lucknow","Kanpur","Nagpur","Indore","Thane","Bhopal",
-        "Visakhapatnam","Patna","Vadodara","Ghaziabad","Ludhiana","Agra","Nashik",
-        "Faridabad","Meerut","Rajkot","Varanasi","Srinagar","Aurangabad","Dhanbad",
-        "Amritsar","Navi Mumbai","Prayagraj","Ranchi","Howrah","Jabalpur","Gwalior",
-        "Vijayawada","Jodhpur","Madurai","Raipur","Kota","Chandigarh","Guwahati",
-        "Solapur","Hubli–Dharwad","Bareilly","Moradabad","Mysuru","Tiruchirappalli"
-      ].map((city) => (
-        <div
-          key={city}
-          className="flex items-center space-x-2 px-2 py-1 cursor-pointer"
-          onClick={() => {
-            const newCities = filters.city.includes(city)
-              ? filters.city.filter((c) => c !== city) // remove
-              : [...filters.city, city]; // add
-            setFilters({ ...filters, city: newCities });
-          }}
-        >
-          <input
-            type="checkbox"
-            checked={filters.city.includes(city)}
-            readOnly
-          />
-          <span>{city}</span>
-        </div>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
-
-
+                  {[
+                    "Mumbai","Delhi","Bengaluru","Hyderabad","Ahmedabad","Chennai","Kolkata",
+                    "Pune","Jaipur","Lucknow","Kanpur","Nagpur","Indore","Thane","Bhopal",
+                    "Visakhapatnam","Patna","Vadodara","Ghaziabad","Ludhiana","Agra","Nashik",
+                    "Faridabad","Meerut","Rajkot","Varanasi","Srinagar","Aurangabad","Dhanbad",
+                    "Amritsar","Navi Mumbai","Prayagraj","Ranchi","Howrah","Jabalpur","Gwalior",
+                    "Vijayawada","Jodhpur","Madurai","Raipur","Kota","Chandigarh","Guwahati",
+                    "Solapur","Hubli–Dharwad","Bareilly","Moradabad","Mysuru","Tiruchirappalli"
+                  ].map((city) => (
+                    <div
+                      key={city}
+                      className="flex items-center space-x-2 px-2 py-1 cursor-pointer"
+                      onClick={() => {
+                        const newCities = filters.city.includes(city)
+                          ? filters.city.filter((c) => c !== city)
+                          : [...filters.city, city];
+                        setFilters({ ...filters, city: newCities });
+                      }}
+                    >
+                      <input type="checkbox" checked={filters.city.includes(city)} readOnly />
+                      <span>{city}</span>
+                    </div>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             <div>
               <label className="text-sm font-medium mb-2 block">Min Amount</label>
               <input
                 type="number"
+                className="w-full px-3 py-2 border rounded-md"
+                placeholder="Min amount"
                 value={filters.minAmount}
                 onChange={(e) => setFilters({...filters, minAmount: e.target.value})}
               />
@@ -335,6 +320,12 @@ const ProcessedOrders = () => {
                 onChange={(e) => setFilters({...filters, maxAmount: e.target.value})}
               />
             </div>
+          </div>
+
+          {/* Search & Reset buttons */}
+          <div className="mt-4 flex gap-2 justify-end">
+            <Button onClick={applyFilters}>Search</Button>
+            <Button variant="outline" onClick={resetFilters}>Reset</Button>
           </div>
         </CardContent>
       </Card>

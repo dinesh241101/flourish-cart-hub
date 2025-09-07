@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, Eye, Truck, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { ShoppingCart, Eye, Truck, CheckCircle, XCircle, Clock, Filter } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -52,13 +51,20 @@ const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<'all' | OrderStatus>('all');
+  const [filters, setFilters] = useState({
+    paymentType: 'all',
+    city: [] as string[],
+    minAmount: '',
+    maxAmount: ''
+  });
   const { toast } = useToast();
 
   useEffect(() => {
     fetchOrders();
-  }, [statusFilter]);
+  }, []);
 
   const fetchOrders = async () => {
+    setIsLoading(true);
     try {
       let query = supabase
         .from('orders')
@@ -68,13 +74,15 @@ const Orders = () => {
         `)
         .order('created_at', { ascending: false });
 
-      if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
-      }
+      if (statusFilter !== 'all') query = query.eq('status', statusFilter);
+      if (filters.paymentType !== 'all') query = query.eq('payment_type', filters.paymentType);
+      if (filters.city.length > 0) query = query.in('city', filters.city);
+      if (filters.minAmount) query = query.gte('final_amount', Number(filters.minAmount));
+      if (filters.maxAmount) query = query.lte('final_amount', Number(filters.maxAmount));
 
       const { data, error } = await query;
-
       if (error) throw error;
+
       setOrders((data || []).map(order => ({
         ...order,
         status: order.status as OrderStatus,
@@ -92,6 +100,21 @@ const Orders = () => {
     }
   };
 
+  const handleSearch = () => {
+    fetchOrders();
+  };
+
+  const handleReset = () => {
+    setFilters({
+      paymentType: 'all',
+      city: [],
+      minAmount: '',
+      maxAmount: ''
+    });
+    setStatusFilter('all');
+    fetchOrders();
+  };
+
   const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
     try {
       const { error } = await supabase
@@ -100,12 +123,7 @@ const Orders = () => {
         .eq('id', orderId);
 
       if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Order status updated successfully",
-      });
-      
+      toast({ title: "Success", description: "Order status updated successfully" });
       fetchOrders();
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -119,37 +137,25 @@ const Orders = () => {
 
   const getStatusIcon = (status: OrderStatus) => {
     switch (status) {
-      case 'pending':
-        return <Clock className="h-4 w-4" />;
+      case 'pending': return <Clock className="h-4 w-4" />;
       case 'confirmed':
-      case 'processing':
-        return <CheckCircle className="h-4 w-4" />;
-      case 'shipped':
-        return <Truck className="h-4 w-4" />;
-      case 'delivered':
-        return <CheckCircle className="h-4 w-4" />;
-      case 'cancelled':
-        return <XCircle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
+      case 'processing': return <CheckCircle className="h-4 w-4" />;
+      case 'shipped': return <Truck className="h-4 w-4" />;
+      case 'delivered': return <CheckCircle className="h-4 w-4" />;
+      case 'cancelled': return <XCircle className="h-4 w-4" />;
+      default: return <Clock className="h-4 w-4" />;
     }
   };
 
   const getStatusVariant = (status: OrderStatus) => {
     switch (status) {
-      case 'pending':
-        return 'secondary' as const;
+      case 'pending': return 'secondary' as const;
       case 'confirmed':
       case 'processing':
-        return 'default' as const;
       case 'shipped':
-        return 'default' as const;
-      case 'delivered':
-        return 'default' as const;
-      case 'cancelled':
-        return 'destructive' as const;
-      default:
-        return 'secondary' as const;
+      case 'delivered': return 'default' as const;
+      case 'cancelled': return 'destructive' as const;
+      default: return 'secondary' as const;
     }
   };
 
@@ -197,6 +203,91 @@ const Orders = () => {
         </Select>
       </div>
 
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Filters
+          </CardTitle>
+          <CardDescription>Filter orders by payment type, city, and amount</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Payment Type</label>
+              <Select 
+                value={filters.paymentType} 
+                onValueChange={(value) => setFilters({...filters, paymentType: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="COD">COD</SelectItem>
+                  <SelectItem value="Prepaid">Prepaid</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Cities</label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder={filters.city.length > 0 ? filters.city.join(", ") : "Select Cities"} />
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px] overflow-y-auto">
+                  <div className="flex items-center space-x-2 px-2 py-1 cursor-pointer" onClick={() => setFilters({ ...filters, city: [] })}>
+                    <input type="checkbox" checked={filters.city.length === 0} readOnly />
+                    <span>All Cities</span>
+                  </div>
+                  {[
+                    "Mumbai","Delhi","Bengaluru","Hyderabad","Ahmedabad","Chennai","Kolkata","Pune","Jaipur","Lucknow","Kanpur","Nagpur","Indore","Thane","Bhopal","Visakhapatnam","Patna","Vadodara","Ghaziabad","Ludhiana","Agra","Nashik","Faridabad","Meerut","Rajkot","Varanasi","Srinagar","Aurangabad","Dhanbad","Amritsar","Navi Mumbai","Prayagraj","Ranchi","Howrah","Jabalpur","Gwalior","Vijayawada","Jodhpur","Madurai","Raipur","Kota","Chandigarh","Guwahati","Solapur","Hubli–Dharwad","Bareilly","Moradabad","Mysuru","Tiruchirappalli"
+                  ].map((city) => (
+                    <div key={city} className="flex items-center space-x-2 px-2 py-1 cursor-pointer" onClick={() => {
+                      const newCities = filters.city.includes(city)
+                        ? filters.city.filter((c) => c !== city)
+                        : [...filters.city, city];
+                      setFilters({ ...filters, city: newCities });
+                    }}>
+                      <input type="checkbox" checked={filters.city.includes(city)} readOnly />
+                      <span>{city}</span>
+                    </div>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Min Amount</label>
+              <input
+                type="number"
+                className="w-full px-3 py-2 border rounded-md"
+                placeholder="Min amount"
+                value={filters.minAmount}
+                onChange={(e) => setFilters({...filters, minAmount: e.target.value})}
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Max Amount</label>
+              <input
+                type="number"
+                className="w-full px-3 py-2 border rounded-md"
+                placeholder="Max amount"
+                value={filters.maxAmount}
+                onChange={(e) => setFilters({...filters, maxAmount: e.target.value})}
+              />
+            </div>
+          </div>
+
+          <div className="mt-4 flex justify-end gap-2">
+            <Button variant="outline" onClick={handleReset}>Reset</Button>
+            <Button onClick={handleSearch}>Search</Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <Card>
           <CardContent className="p-4">
@@ -242,9 +333,7 @@ const Orders = () => {
                   <TableCell>
                     <div>
                       <div className="font-medium">#{order.id.slice(0, 8)}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {order.customers?.name || 'Unknown'}
-                      </div>
+                      <div className="text-sm text-muted-foreground">{order.customers?.name || 'Unknown'}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -257,9 +346,7 @@ const Orders = () => {
                     <div>
                       <div className="font-medium">₹{order.final_amount}</div>
                       {order.discount_amount > 0 && (
-                        <div className="text-sm text-green-600">
-                          -₹{order.discount_amount} discount
-                        </div>
+                        <div className="text-sm text-green-600">-₹{order.discount_amount} discount</div>
                       )}
                     </div>
                   </TableCell>
@@ -269,18 +356,13 @@ const Orders = () => {
                       <span className="capitalize">{order.status}</span>
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    {new Date(order.created_at).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Button variant="outline" size="sm">
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Select
-                        value={order.status}
-                        onValueChange={(value) => updateOrderStatus(order.id, value as OrderStatus)}
-                      >
+                      <Select value={order.status} onValueChange={(value) => updateOrderStatus(order.id, value as OrderStatus)}>
                         <SelectTrigger className="w-32">
                           <SelectValue />
                         </SelectTrigger>
