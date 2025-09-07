@@ -281,7 +281,7 @@ const ProcessedOrders = () => {
       />
     </SelectTrigger>
     <SelectContent>
-      <SelectItem value="all">All Cities</SelectItem>
+      <SelectItem value="all"> Cities</SelectItem>
       {[
         "Mumbai","Delhi","Bengaluru","Hyderabad","Ahmedabad","Chennai","Kolkata",
         "Pune","Jaipur","Lucknow","Kanpur","Nagpur","Indore","Thane","Bhopal",
