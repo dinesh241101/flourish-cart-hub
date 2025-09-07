@@ -320,8 +320,6 @@ const ProcessedOrders = () => {
               <label className="text-sm font-medium mb-2 block">Min Amount</label>
               <input
                 type="number"
-                className="w-full px-3 py-2 border rounded-md"
-                placeholder="Min amount"
                 value={filters.minAmount}
                 onChange={(e) => setFilters({...filters, minAmount: e.target.value})}
               />
