@@ -43,7 +43,7 @@ const ProcessedOrders = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState({
     paymentType: 'all',
-    city: 'all',
+    city: [] as string[],
     minAmount: '',
     maxAmount: ''
   });
@@ -90,8 +90,8 @@ const ProcessedOrders = () => {
       filtered = filtered.filter(order => order.payment_type === filters.paymentType);
     }
 
-    if (filters.city !== 'all') {
-      filtered = filtered.filter(order => order.city === filters.city);
+    if (filters.city.length > 0) {
+      filtered = filtered.filter(order => filters.city.includes(order.city));
     }
 
     if (filters.minAmount) {
@@ -256,23 +256,49 @@ const ProcessedOrders = () => {
               </Select>
             </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">City</label>
-              <Select 
-                value={filters.city} 
-                onValueChange={(value) => setFilters({...filters, city: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Cities</SelectItem>
-                  {getUniqueValues('city').map((city) => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+           <div>
+  <label className="text-sm font-medium mb-2 block">Cities</label>
+  <Select
+    value="" // prevent single-selection behavior
+    onValueChange={(value) => {
+      if (value === "all") {
+        setFilters({ ...filters, city: [] }); // reset if "All" selected
+      } else {
+        const newCities = filters.city.includes(value)
+          ? filters.city.filter((c) => c !== value) // remove if already selected
+          : [...filters.city, value]; // add if not selected
+        setFilters({ ...filters, city: newCities });
+      }
+    }}
+  >
+    <SelectTrigger>
+      <SelectValue
+        placeholder={
+          filters.city.length > 0
+            ? filters.city.join(", ")
+            : "Select Cities"
+        }
+      />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="all">All Cities</SelectItem>
+      {[
+        "Mumbai","Delhi","Bengaluru","Hyderabad","Ahmedabad","Chennai","Kolkata",
+        "Pune","Jaipur","Lucknow","Kanpur","Nagpur","Indore","Thane","Bhopal",
+        "Visakhapatnam","Patna","Vadodara","Ghaziabad","Ludhiana","Agra","Nashik",
+        "Faridabad","Meerut","Rajkot","Varanasi","Srinagar","Aurangabad","Dhanbad",
+        "Amritsar","Navi Mumbai","Prayagraj","Ranchi","Howrah","Jabalpur","Gwalior",
+        "Vijayawada","Jodhpur","Madurai","Raipur","Kota","Chandigarh","Guwahati",
+        "Solapur","Hubli–Dharwad","Bareilly","Moradabad","Mysuru","Tiruchirappalli"
+      ].map((city) => (
+        <SelectItem key={city} value={city}>
+          {city} {filters.city.includes(city) ? "✔️" : ""}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
+
 
             <div>
               <label className="text-sm font-medium mb-2 block">Min Amount</label>
