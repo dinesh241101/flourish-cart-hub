@@ -256,21 +256,9 @@ const ProcessedOrders = () => {
               </Select>
             </div>
 
-           <div>
+            <div>
   <label className="text-sm font-medium mb-2 block">Cities</label>
-  <Select
-    value="" // prevent single-selection behavior
-    onValueChange={(value) => {
-      if (value === "all") {
-        setFilters({ ...filters, city: [] }); // reset if "All" selected
-      } else {
-        const newCities = filters.city.includes(value)
-          ? filters.city.filter((c) => c !== value) // remove if already selected
-          : [...filters.city, value]; // add if not selected
-        setFilters({ ...filters, city: newCities });
-      }
-    }}
-  >
+  <Select>
     <SelectTrigger>
       <SelectValue
         placeholder={
@@ -280,8 +268,21 @@ const ProcessedOrders = () => {
         }
       />
     </SelectTrigger>
-    <SelectContent>
-      <SelectItem value="all"> Cities</SelectItem>
+    <SelectContent className="max-h-[300px] overflow-y-auto">
+      {/* All Cities option */}
+      <div
+        className="flex items-center space-x-2 px-2 py-1 cursor-pointer"
+        onClick={() => setFilters({ ...filters, city: [] })}
+      >
+        <input
+          type="checkbox"
+          checked={filters.city.length === 0}
+          readOnly
+        />
+        <span>All Cities</span>
+      </div>
+
+      {/* City list with checkboxes */}
       {[
         "Mumbai","Delhi","Bengaluru","Hyderabad","Ahmedabad","Chennai","Kolkata",
         "Pune","Jaipur","Lucknow","Kanpur","Nagpur","Indore","Thane","Bhopal",
@@ -291,13 +292,28 @@ const ProcessedOrders = () => {
         "Vijayawada","Jodhpur","Madurai","Raipur","Kota","Chandigarh","Guwahati",
         "Solapur","Hubli–Dharwad","Bareilly","Moradabad","Mysuru","Tiruchirappalli"
       ].map((city) => (
-        <SelectItem key={city} value={city}>
-          {city} {filters.city.includes(city) ? "✔️" : ""}
-        </SelectItem>
+        <div
+          key={city}
+          className="flex items-center space-x-2 px-2 py-1 cursor-pointer"
+          onClick={() => {
+            const newCities = filters.city.includes(city)
+              ? filters.city.filter((c) => c !== city) // remove
+              : [...filters.city, city]; // add
+            setFilters({ ...filters, city: newCities });
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={filters.city.includes(city)}
+            readOnly
+          />
+          <span>{city}</span>
+        </div>
       ))}
     </SelectContent>
   </Select>
 </div>
+
 
 
             <div>
