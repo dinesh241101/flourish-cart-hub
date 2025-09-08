@@ -9,7 +9,8 @@ import {
   Tags, 
   Percent, 
   Settings,
-  FolderTree
+  FolderTree,
+  TrendingUp
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -19,6 +20,8 @@ const AdminSidebar = () => {
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/categories', icon: FolderTree, label: 'Categories' },
     { path: '/admin/products', icon: Package, label: 'Products' },
+    { path: '/admin/inventory', icon: Package, label: 'Inventory' },
+    { path: '/admin/trending-products', icon: TrendingUp, label: 'Trending' },
     { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
     { path: '/admin/processed-orders', icon: Tags, label: 'Processed Orders' },
     { path: '/admin/customers', icon: Users, label: 'Customers' },
