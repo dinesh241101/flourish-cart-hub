@@ -19,6 +19,11 @@ import Settings from "./pages/admin/Settings";
 import Analytics from "./pages/admin/Analytics";
 import ProcessedOrders from "./pages/admin/ProcessedOrders";
 import NotFound from "./pages/NotFound";
+import Inventory from './pages/admin/Inventory';
+import Trending from './pages/Trending';
+import TrendingProducts from './pages/admin/TrendingProducts';
+import AddProduct from './pages/admin/AddProduct';
+import CreateOffer from './pages/admin/CreateOffer';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,6 +49,7 @@ const App = () => {
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/categories/:categoryId" element={<Categories />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/trending" element={<Trending />} />
                 
                 {/* Protected Admin Routes */}
                 <Route path="/admin" element={<AdminLayout />}>
@@ -51,10 +57,14 @@ const App = () => {
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="categories" element={<AdminCategories />} />
                   <Route path="products" element={<Products />} />
+                  <Route path="add-product" element={<AddProduct />} />
+                  <Route path='inventory' element={<Inventory/>} />
+                  <Route path='trending' element={<TrendingProducts/>} />
                   <Route path="orders" element={<Orders />} />
                   <Route path="processed-orders" element={<ProcessedOrders />} />
                   <Route path="customers" element={<Customers />} />
                   <Route path="offers" element={<Offers />} />
+                  <Route path="create-offer" element={<CreateOffer />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
                 </Route>

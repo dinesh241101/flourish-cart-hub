@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,12 +19,21 @@ const AdminDashboard = () => {
     totalRevenue: 0
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [flash, setFlash] = useState(false);
 
   useEffect(() => {
     fetchDashboardStats();
+
+    // Auto refresh only the top stats every 30s
+    const interval = setInterval(() => {
+      fetchDashboardStats(true);
+    }, 5000); // 30 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchDashboardStats = async () => {
+  const fetchDashboardStats = async (triggerFlash: boolean = false) => {
     try {
       const [productsResult, ordersResult, customersResult, revenueResult] = await Promise.all([
         supabase.from('products').select('id', { count: 'exact' }),
@@ -34,7 +42,8 @@ const AdminDashboard = () => {
         supabase.from('orders').select('final_amount')
       ]);
 
-      const totalRevenue = revenueResult.data?.reduce((sum, order) => sum + Number(order.final_amount), 0) || 0;
+      const totalRevenue =
+        revenueResult.data?.reduce((sum, order) => sum + Number(order.final_amount), 0) || 0;
 
       setStats({
         totalProducts: productsResult.count || 0,
@@ -42,6 +51,13 @@ const AdminDashboard = () => {
         totalCustomers: customersResult.count || 0,
         totalRevenue: totalRevenue
       });
+
+      setLastUpdated(new Date());
+
+      if (triggerFlash) {
+        setFlash(true);
+        setTimeout(() => setFlash(false), 800); // flash duration
+      }
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     } finally {
@@ -108,28 +124,44 @@ const AdminDashboard = () => {
         <p className="text-gray-500">Welcome to BMS Store Admin Panel</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((card) => {
-          const Icon = card.icon;
-          return (
-            <Card key={card.title} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">
-                  {card.title}
-                </CardTitle>
-                <Icon className={`h-4 w-4 ${card.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{card.value}</div>
-                <CardDescription className="text-xs text-gray-500">
-                  {card.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          );
-        })}
+      {/* Auto-refreshing Top Stats */}
+      <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {statCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <Card
+                key={card.title}
+                className={`transition-all duration-500 ${
+                  flash ? 'bg-yellow-50 shadow-lg' : 'hover:shadow-lg'
+                }`}
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-600">
+                    {card.title}
+                  </CardTitle>
+                  <Icon className={`h-4 w-4 ${card.color}`} />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{card.value}</div>
+                  <CardDescription className="text-xs text-gray-500">
+                    {card.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Last updated timestamp */}
+        {lastUpdated && (
+          <p className="text-xs text-gray-400 mt-2 text-right">
+            Last updated: {lastUpdated.toLocaleTimeString()}
+          </p>
+        )}
       </div>
 
+      {/* Rest of dashboard (static, no auto refresh) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -147,13 +179,29 @@ const AdminDashboard = () => {
             <CardDescription>Common administrative tasks</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Button className="w-full justify-start" variant="outline">
-              <Package className="mr-2 h-4 w-4" />
-              Add New Product
+            <Button className="w-full justify-start" variant="outline" asChild>
+              <a href="/admin/add-product">
+                <Package className="mr-2 h-4 w-4" />
+                Add New Product
+              </a>
             </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <TrendingUp className="mr-2 h-4 w-4" />
-              Create Offer
+            <Button className="w-full justify-start" variant="outline" asChild>
+              <a href="/admin/create-offer">
+                <TrendingUp className="mr-2 h-4 w-4" />
+                Create Offer
+              </a>
+            </Button>
+            <Button className="w-full justify-start" variant="outline" asChild>
+              <a href="/admin/add-category">
+                <Package className="mr-2 h-4 w-4" />
+                Add New Category
+              </a>
+            </Button>
+            <Button className="w-full justify-start" variant="outline" asChild>
+              <a href="/admin/add-inventory">
+                <Package className="mr-2 h-4 w-4" />
+                Add Inventory
+              </a>
             </Button>
           </CardContent>
         </Card>

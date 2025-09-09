@@ -319,7 +319,7 @@ const Trending = () => {
             <p className="text-muted-foreground mb-8">
               No products are currently marked as trending.
             </p>
-            <Link to="/">
+            <Link to="/categories">
               <Button>Explore All Products</Button>
             </Link>
           </div>
