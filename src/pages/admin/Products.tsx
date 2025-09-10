@@ -540,6 +540,7 @@ const Products = () => {
                       onClick={() => openEditDialog(product)}
                     >
                       <Edit className="h-4 w-4" />
+                      <a href={`/admin/products/edit/${product.id}`}>Edit</a>
                     </Button>
                     <Button
                       variant="outline"

@@ -24,6 +24,8 @@ import Trending from './pages/Trending';
 import TrendingProducts from './pages/admin/TrendingProducts';
 import AddProduct from './pages/admin/AddProduct';
 import CreateOffer from './pages/admin/CreateOffer';
+import AddCategory from './pages/admin/AddCategory';
+import ProductForm from './pages/admin/ProductForm';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,10 +58,13 @@ const App = () => {
                   <Route index element={<Navigate to="/admin/dashboard" replace />} />
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="categories" element={<AdminCategories />} />
+                  <Route path="add-category" element={<AddCategory />} />
+                  <Route path="/admin/products/add" element={<ProductForm />} />
+                  <Route path="/admin/products/edit/:productId" element={<ProductForm />} />
                   <Route path="products" element={<Products />} />
                   <Route path="add-product" element={<AddProduct />} />
-                  <Route path='inventory' element={<Inventory/>} />
-                  <Route path='trending' element={<TrendingProducts/>} />
+                  <Route path='inventory' element={<Inventory />} />
+                  <Route path='trending' element={<TrendingProducts />} />
                   <Route path="orders" element={<Orders />} />
                   <Route path="processed-orders" element={<ProcessedOrders />} />
                   <Route path="customers" element={<Customers />} />

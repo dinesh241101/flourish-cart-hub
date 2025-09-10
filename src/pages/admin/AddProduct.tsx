@@ -227,6 +227,7 @@ const AddProduct = () => {
             }
             className="w-full border p-2 rounded-md"
           >
+            <option value=""></option>
             <option value="physical">Physical</option>
             <option value="digital">Digital</option>
             <option value="service">Service</option>

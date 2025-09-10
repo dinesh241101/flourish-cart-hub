@@ -10,8 +10,11 @@ import {
   Percent, 
   Settings,
   FolderTree,
-  TrendingUp
+  TrendingUp,
+  FolderCheck
 } from 'lucide-react';
+import Categories from '@/pages/Categories';
+import CategoryCard from '../CategoryCard';
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -19,6 +22,7 @@ const AdminSidebar = () => {
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/categories', icon: FolderTree, label: 'Categories' },
+    {path: '/admin/add-category', icon: FolderCheck, label: 'Add Category' },
     { path: '/admin/products', icon: Package, label: 'Products' },
     {path: '/admin/add-product', icon: Package, label: 'Add Product' },
     { path: '/admin/inventory', icon: Package, label: 'Inventory' },

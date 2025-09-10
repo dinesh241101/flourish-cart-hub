@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Grid3X3, Heart, ShoppingCart, Share2 } from 'lucide-react';
+import { ArrowLeft, Grid3X3, Heart, ShoppingCart, Share2, PlusCircle, Filter } from 'lucide-react';
 import Header from '@/components/Header';
 
 interface Category {
@@ -12,6 +12,8 @@ interface Category {
   name: string;
   description: string;
   image_url: string;
+  is_active: boolean;
+  created_at: string;
 }
 
 interface Product {
@@ -27,6 +29,7 @@ interface Product {
 
 const Categories = () => {
   const { categoryId } = useParams();
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -45,7 +48,7 @@ const Categories = () => {
         .from('categories')
         .select('*')
         .eq('is_active', true)
-        .order('sort_order', { ascending: true });
+        .order('created_at', { ascending: false }); // default sorting DESC
 
       if (error) throw error;
       setCategories(data || []);
@@ -59,8 +62,7 @@ const Categories = () => {
   const fetchCategoryProducts = async (catId: string) => {
     try {
       setIsLoading(true);
-      
-      // Fetch category details
+
       const { data: categoryData, error: categoryError } = await supabase
         .from('categories')
         .select('*')
@@ -70,7 +72,6 @@ const Categories = () => {
       if (categoryError) throw categoryError;
       setSelectedCategory(categoryData);
 
-      // Fetch products in this category
       const { data: productsData, error: productsError } = await supabase
         .from('products')
         .select(`
@@ -92,12 +93,10 @@ const Categories = () => {
   };
 
   const addToCart = (productId: string) => {
-    // TODO: Implement cart functionality
     console.log('Adding to cart:', productId);
   };
 
   const toggleWishlist = (productId: string) => {
-    // TODO: Implement wishlist functionality
     console.log('Toggle wishlist:', productId);
   };
 
@@ -109,7 +108,6 @@ const Categories = () => {
         url: `${window.location.origin}/product/${productId}`,
       });
     } else {
-      // Fallback for browsers that don't support Web Share API
       navigator.clipboard.writeText(`${window.location.origin}/product/${productId}`);
     }
   };
@@ -135,8 +133,26 @@ const Categories = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="container mx-auto px-4 py-8">
+        {/* Header with Add + Filter */}
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold">Shop by Category</h1>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="gap-2">
+              <Filter className="h-4 w-4" />
+              Filter
+            </Button>
+            <Button
+              onClick={() => navigate('/admin/add-category')}
+              className="gap-2"
+            >
+              <PlusCircle className="h-4 w-4" />
+              Add Category
+            </Button>
+          </div>
+        </div>
+
         {/* Category View */}
         {selectedCategory ? (
           <div className="space-y-8">
@@ -185,33 +201,15 @@ const Categories = () => {
                         {Math.round(((product.mrp - product.sale_price) / product.mrp) * 100)}% OFF
                       </Badge>
                     )}
-                    <div className="absolute top-2 right-2 flex flex-col gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => toggleWishlist(product.id)}
-                      >
-                        <Heart className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => shareProduct(product.id, product.name)}
-                      >
-                        <Share2 className="h-4 w-4" />
-                      </Button>
-                    </div>
                   </div>
-                  
+
                   <CardContent className="p-4">
                     <Link to={`/product/${product.id}`}>
                       <h3 className="font-semibold text-sm mb-2 line-clamp-2 hover:text-primary transition-colors">
                         {product.name}
                       </h3>
                     </Link>
-                    
+
                     <div className="flex items-center gap-2 mb-3">
                       <span className="font-bold text-lg">₹{product.sale_price}</span>
                       {product.mrp > product.sale_price && (
@@ -219,8 +217,8 @@ const Categories = () => {
                       )}
                     </div>
 
-                    <Button 
-                      className="w-full gap-2" 
+                    <Button
+                      className="w-full gap-2"
                       size="sm"
                       onClick={() => addToCart(product.id)}
                     >
@@ -242,42 +240,27 @@ const Categories = () => {
           </div>
         ) : (
           /* Categories Grid */
-          <div className="space-y-8">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold mb-4">Shop by Category</h1>
-              <p className="text-lg text-muted-foreground">Discover our carefully curated fashion collections</p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {categories.map((category) => (
-                <Link key={category.id} to={`/categories/${category.id}`}>
-                  <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden">
-                    <div className="relative">
-                      <img
-                        src={category.image_url || '/placeholder.svg'}
-                        alt={category.name}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <h3 className="text-white font-bold text-lg mb-1">{category.name}</h3>
-                        {category.description && (
-                          <p className="text-white/80 text-sm line-clamp-2">{category.description}</p>
-                        )}
-                      </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {categories.map((category) => (
+              <Link key={category.id} to={`/categories/${category.id}`}>
+                <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden">
+                  <div className="relative">
+                    <img
+                      src={category.image_url || '/placeholder.svg'}
+                      alt={category.name}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="text-white font-bold text-lg mb-1">{category.name}</h3>
+                      {category.description && (
+                        <p className="text-white/80 text-sm line-clamp-2">{category.description}</p>
+                      )}
                     </div>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-
-            {categories.length === 0 && (
-              <div className="text-center py-12">
-                <Grid3X3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-muted-foreground mb-2">No categories available</h3>
-                <p className="text-sm text-muted-foreground">Categories will appear here once they are added.</p>
-              </div>
-            )}
+                  </div>
+                </Card>
+              </Link>
+            ))}
           </div>
         )}
       </div>

@@ -28,7 +28,7 @@ const AdminDashboard = () => {
     // Auto refresh only the top stats every 30s
     const interval = setInterval(() => {
       fetchDashboardStats(true);
-    }, 5000); // 30 seconds
+    }, 30000); // 30 seconds
 
     return () => clearInterval(interval);
   }, []);
