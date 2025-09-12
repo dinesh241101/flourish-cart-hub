@@ -10,7 +10,7 @@ import Categories from "./pages/Categories";
 import AdminLogin from "./pages/AdminLogin";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminCategories from "./pages/admin/Categories";
+import AdminCategories from "./pages/admin/AdminCategories";
 import Products from "./pages/admin/Products";
 import Orders from "./pages/admin/Orders";
 import Customers from "./pages/admin/Customers";
