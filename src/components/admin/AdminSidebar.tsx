@@ -13,7 +13,6 @@ import {
   TrendingUp,
   FolderCheck
 } from 'lucide-react';
-import Categories from '@/pages/Categories';
 import CategoryCard from '../CategoryCard';
 
 const AdminSidebar = () => {

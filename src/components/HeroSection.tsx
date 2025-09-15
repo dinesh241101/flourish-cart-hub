@@ -13,7 +13,7 @@ const HeroSection = () => {
       title: "New Collection",
       subtitle: "Summer 2024",
       description: "Discover our latest fashion trends and exclusive designs for the modern woman",
-      image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200&h=600&fit=crop",
+      image: "",
       cta: "Shop Collection"
     },
     {
@@ -21,7 +21,7 @@ const HeroSection = () => {
       title: "Fashion Forward",
       subtitle: "Trendy Styles",
       description: "Elevate your style with our curated selection of premium fashion pieces",
-      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=600&fit=crop",
+      image: "",
       cta: "Explore Trends"
     },
     {
@@ -29,7 +29,7 @@ const HeroSection = () => {
       title: "Exclusive Deals",
       subtitle: "Up to 50% Off",
       description: "Limited time offers on your favorite fashion brands and styles",
-      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1200&h=600&fit=crop",
+      image: "",
       cta: "Shop Sale"
     }
   ];

@@ -29,10 +29,10 @@ const NotFound = () => {
 
         {/* Action Button */}
         <a
-          href="/"
+          href="/admin/dashboard"
           className="inline-block px-6 py-3 rounded-xl bg-white text-purple-600 font-semibold shadow-lg hover:scale-105 transform transition-all duration-300"
         >
-          ⬅ Go Back toHome Page
+          ⬅ Go Back to Admin Dashboard
         </a>
       </div>
     </div>

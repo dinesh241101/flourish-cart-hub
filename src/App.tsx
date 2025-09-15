@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
-import Categories from "./pages/Categories";
 import AdminLogin from "./pages/AdminLogin";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -19,6 +18,7 @@ import Settings from "./pages/admin/Settings";
 import Analytics from "./pages/admin/Analytics";
 import ProcessedOrders from "./pages/admin/ProcessedOrders";
 import NotFound from "./pages/NotFound";
+import AdminNotFound from "./pages/admin/AdminNotFound";
 import Inventory from './pages/admin/Inventory';
 import Trending from './pages/Trending';
 import TrendingProducts from './pages/admin/TrendingProducts';
@@ -26,7 +26,11 @@ import AddProduct from './pages/admin/AddProduct';
 import CreateOffer from './pages/admin/CreateOffer';
 import AddCategory from './pages/admin/AddCategory';
 import ProductForm from './pages/admin/ProductForm';
-
+import CategoriesLanding from "@/pages/CategoriesLanding";
+import CategoryProducts from "@/pages/CategoryProducts";
+import ProductPage from './pages/ProductPage';
+import CategoryLanding from '@/pages/CategoriesLanding';
+// import CategoryPage from './pages/CategoryPage';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -48,10 +52,16 @@ const App = () => {
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Index />} />
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/categories/:categoryId" element={<Categories />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/trending" element={<Trending />} />
+                <Route path="/categories" element={<CategoriesLanding />} />
+                <Route path="/category/:id" element={<CategoryProducts />} />
+                <Route path='/product/:id' element={<ProductPage />} />
+                <Route path="/category" element={<CategoriesLanding />} />
+                {/* <Route path="/category/:id" element={<CategoryPage />} /> */}
+                <Route path="/all-categories" element={<CategoriesLanding />} /> 
+                {/* <Route path="/category" element={<CategoryLanding />} /> */}
+                
                 
                 {/* Protected Admin Routes */}
                 <Route path="/admin" element={<AdminLayout />}>
@@ -72,10 +82,12 @@ const App = () => {
                   <Route path="create-offer" element={<CreateOffer />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
+                  <Route path="/admin/categories" element={<AdminCategories />} />
                 </Route>
                 
                 {/* Catch all route */}
                 <Route path="*" element={<NotFound />} />
+                <Route path="/admin/*" element={<AdminNotFound />} />
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
