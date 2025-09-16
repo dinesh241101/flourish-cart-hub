@@ -42,7 +42,7 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
-    <React.StrictMode>
+    <React.StrictMode> 
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <TooltipProvider>
