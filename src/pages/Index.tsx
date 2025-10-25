@@ -83,8 +83,9 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
 
-      {/* Hero Section */}
-      <HeroSection />
+      <main>
+        {/* Hero Section */}
+        <HeroSection />
 
       {/* Active Offers */}
       {offers.length > 0 && (
@@ -187,6 +188,7 @@ const Index = () => {
           </div>
         </div>
       </section>
+      </main>
     </div>
   );
 };
