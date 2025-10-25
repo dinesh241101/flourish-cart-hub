@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router"; // for navigation
+import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import CategoryGrid from "@/components/CategoryGrid";
 import ProductGrid from "@/components/ProductGrid";
@@ -14,7 +14,7 @@ const Index = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -145,7 +145,7 @@ const Index = () => {
               </div>
               <Button
                 variant="outline"
-                onClick={() => router.push(`/category/${category.id}`)}
+                onClick={() => navigate(`/category/${category.id}`)}
               >
                 View All
               </Button>
