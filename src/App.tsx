@@ -85,9 +85,8 @@ const App = () => {
                   <Route path="/admin/categories" element={<AdminCategories />} />
                 </Route>
                 
-                {/* Catch all route */}
+                {/* Catch all routes */}
                 <Route path="*" element={<NotFound />} />
-                <Route path="/admin/*" element={<AdminNotFound />} />
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
