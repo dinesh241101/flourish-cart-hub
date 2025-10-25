@@ -82,9 +82,9 @@ const ProductPage: React.FC = () => {
         .single();
 
       if (error) throw error;
-      setProduct(data as Product);
+      if (data) setProduct(data as unknown as Product);
       // get related lists
-      fetchSimilarAndRelated(data);
+      if (data) fetchSimilarAndRelated(data);
       checkIfInCart(id);
     } catch (err) {
       console.error("Error loading product:", err);

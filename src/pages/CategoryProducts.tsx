@@ -241,7 +241,9 @@ const CategoryProduct: React.FC = () => {
                 return (
                   <section
                     key={cat.id}
-                    ref={(el: HTMLDivElement | null) => (productSectionRefs.current[cat.id] = el)}
+                    ref={(el: HTMLDivElement | null) => {
+                      if (el) productSectionRefs.current[cat.id] = el;
+                    }}
                     data-section-id={cat.id}
                     className="mb-10"
                   >
