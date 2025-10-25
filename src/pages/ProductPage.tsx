@@ -82,9 +82,17 @@ const ProductPage: React.FC = () => {
         .single();
 
       if (error) throw error;
-      if (data) setProduct(data as unknown as Product);
-      // get related lists
-      if (data) fetchSimilarAndRelated(data);
+      if (data) {
+        const productData = {
+          ...data,
+          images: (data.images as any as string[]) || [],
+          videos: (data.videos as any as string[]) || [],
+          features: (data.features as any as string[]) || [],
+          similar_products: (data.similar_products as any as string[]) || [],
+        };
+        setProduct(productData as Product);
+        fetchSimilarAndRelated(productData);
+      }
       checkIfInCart(id);
     } catch (err) {
       console.error("Error loading product:", err);
@@ -104,7 +112,13 @@ const ProductPage: React.FC = () => {
           .select("*")
           .in("id", p.similar_products)
           .limit(8);
-        similar = data || [];
+        similar = (data || []).map(item => ({
+          ...item,
+          images: (item.images as string[]) || [],
+          videos: (item.videos as string[]) || [],
+          features: (item.features as string[]) || [],
+          similar_products: (item.similar_products as string[]) || [],
+        })) as Product[];
       } else if (p?.category_id) {
         const { data } = await supabase
           .from("products")
@@ -112,7 +126,13 @@ const ProductPage: React.FC = () => {
           .eq("category_id", p.category_id)
           .neq("id", p.id)
           .limit(8);
-        similar = data || [];
+        similar = (data || []).map(item => ({
+          ...item,
+          images: (item.images as any as string[]) || [],
+          videos: (item.videos as any as string[]) || [],
+          features: (item.features as any as string[]) || [],
+          similar_products: (item.similar_products as any as string[]) || [],
+        })) as Product[];
       }
 
       // you may also like: random products from same category/subcategory
@@ -124,7 +144,13 @@ const ProductPage: React.FC = () => {
         .limit(8);
 
       setSimilarProducts(similar);
-      setYouMayLike(also || []);
+      setYouMayLike((also || []).map(item => ({
+        ...item,
+        images: (item.images as any as string[]) || [],
+        videos: (item.videos as any as string[]) || [],
+        features: (item.features as any as string[]) || [],
+        similar_products: (item.similar_products as any as string[]) || [],
+      })) as Product[]);
     } catch (err) {
       console.error("Error fetching related products", err);
     }

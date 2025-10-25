@@ -132,6 +132,42 @@ export type Database = {
           },
         ]
       }
+      categories_products: {
+        Row: {
+          category_id: string
+          created_at: string
+          id: string
+          product_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          id?: string
+          product_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_products_category_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categories_products_product_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       combo_product_items: {
         Row: {
           combo_product_id: string
@@ -286,6 +322,7 @@ export type Database = {
       }
       offers: {
         Row: {
+          city: string | null
           created_at: string
           description: string | null
           discount_value: number
@@ -299,6 +336,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          city?: string | null
           created_at?: string
           description?: string | null
           discount_value: number
@@ -312,6 +350,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          city?: string | null
           created_at?: string
           description?: string | null
           discount_value?: number
@@ -484,75 +523,164 @@ export type Database = {
         Row: {
           base_price: number
           category_id: string | null
+          city: string | null
           cloth_type: string | null
           code: string | null
           compare_price: number | null
           created_at: string
           description: string | null
-          features: string[] | null
+          features: Json | null
           id: string
           image_url: string | null
-          images: string[] | null
+          image_urls: Json | null
+          images: Json | null
           is_active: boolean
           mrp: number | null
           name: string
           product_type: string | null
           sale_price: number | null
-          similar_products: string[] | null
+          similar_products: Json | null
           sku_code: string | null
           stock_quantity: number
+          subcategory_id: string | null
+          type: string | null
           updated_at: string
-          videos: string[] | null
+          video_urls: Json | null
+          videos: Json | null
         }
         Insert: {
           base_price?: number
           category_id?: string | null
+          city?: string | null
           cloth_type?: string | null
           code?: string | null
           compare_price?: number | null
           created_at?: string
           description?: string | null
-          features?: string[] | null
+          features?: Json | null
           id?: string
           image_url?: string | null
-          images?: string[] | null
+          image_urls?: Json | null
+          images?: Json | null
           is_active?: boolean
           mrp?: number | null
           name: string
           product_type?: string | null
           sale_price?: number | null
-          similar_products?: string[] | null
+          similar_products?: Json | null
           sku_code?: string | null
           stock_quantity?: number
+          subcategory_id?: string | null
+          type?: string | null
           updated_at?: string
-          videos?: string[] | null
+          video_urls?: Json | null
+          videos?: Json | null
         }
         Update: {
           base_price?: number
           category_id?: string | null
+          city?: string | null
           cloth_type?: string | null
           code?: string | null
           compare_price?: number | null
           created_at?: string
           description?: string | null
-          features?: string[] | null
+          features?: Json | null
           id?: string
           image_url?: string | null
-          images?: string[] | null
+          image_urls?: Json | null
+          images?: Json | null
           is_active?: boolean
           mrp?: number | null
           name?: string
           product_type?: string | null
           sale_price?: number | null
-          similar_products?: string[] | null
+          similar_products?: Json | null
           sku_code?: string | null
           stock_quantity?: number
+          subcategory_id?: string | null
+          type?: string | null
           updated_at?: string
-          videos?: string[] | null
+          video_urls?: Json | null
+          videos?: Json | null
         }
         Relationships: [
           {
             foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "subcategories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subcategories: {
+        Row: {
+          category_id: string | null
+          created_at: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcategories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trending_categories: {
+        Row: {
+          category_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trending_categories_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"

@@ -29,7 +29,8 @@ import ProductForm from './pages/admin/ProductForm';
 import CategoriesLanding from "@/pages/CategoriesLanding";
 import CategoryProducts from "@/pages/CategoryProducts";
 import ProductPage from './pages/ProductPage';
-import CategoryLanding from '@/pages/CategoriesLanding';
+import ShippedOrders from './pages/admin/ShippedOrders';
+import DeliveredOrders from './pages/admin/DeliveredOrders';
 // import CategoryPage from './pages/CategoryPage';
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,7 +57,7 @@ const App = () => {
                 <Route path="/trending" element={<Trending />} />
                 <Route path="/categories" element={<CategoriesLanding />} />
                 <Route path="/category/:id" element={<CategoryProducts />} />
-                <Route path='/product/:id' element={<ProductPage />} />
+                <Route path='/product/:productId' element={<ProductPage />} />
                 <Route path="/category" element={<CategoriesLanding />} />
                 {/* <Route path="/category/:id" element={<CategoryPage />} /> */}
                 <Route path="/all-categories" element={<CategoriesLanding />} /> 
@@ -77,6 +78,8 @@ const App = () => {
                   <Route path='trending' element={<TrendingProducts />} />
                   <Route path="orders" element={<Orders />} />
                   <Route path="processed-orders" element={<ProcessedOrders />} />
+                  <Route path="shipped-orders" element={<ShippedOrders />} />
+                  <Route path="delivered-orders" element={<DeliveredOrders />} />
                   <Route path="customers" element={<Customers />} />
                   <Route path="offers" element={<Offers />} />
                   <Route path="create-offer" element={<CreateOffer />} />
