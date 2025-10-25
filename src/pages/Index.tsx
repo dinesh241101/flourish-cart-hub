@@ -33,7 +33,8 @@ const Index = () => {
           products (
             id,
             name,
-            price,
+            sale_price,
+            mrp,
             image_url,
             stock_quantity
           )

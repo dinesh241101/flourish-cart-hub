@@ -5,11 +5,10 @@ import ProductCard from './ProductCard';
 interface Product {
   id: string;
   name: string;
-  code: string;
-  selling_price: number;
-  actual_price: number;
+  sale_price: number;
+  mrp: number;
+  image_url?: string;
   stock_quantity: number;
-  categories?: { name: string } | null;
 }
 
 interface ProductGridProps {
@@ -29,13 +28,13 @@ const ProductGrid = ({ products }: ProductGridProps) => {
           key={product.id}
           id={product.id}
           name={product.name}
-          code={product.code}
-          actualPrice={product.actual_price}
-          sellingPrice={product.selling_price}
-          image="/placeholder.svg" // You can add image field to products table
-          category={product.categories?.name || 'Uncategorized'}
+          code={product.id}
+          actualPrice={product.mrp}
+          sellingPrice={product.sale_price}
+          image={product.image_url || "/placeholder.svg"}
+          category=""
           inStock={product.stock_quantity > 0}
-          isNew={false} // You can add this logic based on created_at
+          isNew={false}
           onClick={() => handleProductClick(product.id)}
         />
       ))}
