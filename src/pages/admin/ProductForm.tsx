@@ -42,12 +42,12 @@ const AddProductForm: React.FC<ProductFormProps> = ({ productId }) => {
         setDescription(data.description || "");
         setMrp(data.mrp || 0);
         setSalePrice(data.sale_price || 0);
-        setFeatures(data.features || []);
-        setSimilarProducts(data.similar_products || []);
+        setFeatures(Array.isArray(data.features) ? data.features as string[] : []);
+        setSimilarProducts(Array.isArray(data.similar_products) ? data.similar_products as string[] : []);
         setImageUrls(data.image_url ? [data.image_url] : []);
-        setVideoUrls(data.videos || []);
-        setImages(data.images || []);
-        setVideos(data.videos || []);
+        setVideoUrls(Array.isArray(data.videos) ? data.videos as string[] : []);
+        setImages(Array.isArray(data.images) ? data.images as string[] : []);
+        setVideos(Array.isArray(data.videos) ? data.videos as string[] : []);
       }
     };
     fetchProduct();

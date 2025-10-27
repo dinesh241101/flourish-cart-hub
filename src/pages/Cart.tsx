@@ -59,7 +59,13 @@ const Cart = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setCartItems(data || []);
+      setCartItems((data || []).map(item => ({
+        ...item,
+        products: item.products ? {
+          ...item.products,
+          images: Array.isArray(item.products.images) ? item.products.images as string[] : null
+        } : undefined
+      })));
     } catch (error) {
       console.error("Error fetching cart items:", error);
       toast({

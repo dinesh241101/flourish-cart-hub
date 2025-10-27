@@ -83,15 +83,16 @@ const ProductPage: React.FC = () => {
 
       if (error) throw error;
       if (data) {
-        const productData = {
-          ...data,
-          images: (data.images as any as string[]) || [],
-          videos: (data.videos as any as string[]) || [],
-          features: (data.features as any as string[]) || [],
-          similar_products: (data.similar_products as any as string[]) || [],
+        const productData: any = data;
+        const processedProduct = {
+          ...productData,
+          images: Array.isArray(productData.images) ? productData.images as string[] : [],
+          videos: Array.isArray(productData.videos) ? productData.videos as string[] : [],
+          features: Array.isArray(productData.features) ? productData.features as string[] : [],
+          similar_products: Array.isArray(productData.similar_products) ? productData.similar_products as string[] : []
         };
-        setProduct(productData as Product);
-        fetchSimilarAndRelated(productData);
+        setProduct(processedProduct);
+        fetchSimilarAndRelated(processedProduct);
       }
       checkIfInCart(id);
     } catch (err) {
