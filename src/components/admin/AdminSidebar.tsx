@@ -14,6 +14,7 @@ import {
   FolderCheck
 } from 'lucide-react';
 import CategoryCard from '../CategoryCard';
+import path from 'path';
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -25,9 +26,11 @@ const AdminSidebar = () => {
     { path: '/admin/products', icon: Package, label: 'Products' },
     {path: '/admin/add-product', icon: Package, label: 'Add Product' },
     { path: '/admin/inventory', icon: Package, label: 'Inventory' },
-    { path: '/admin/trending-products', icon: TrendingUp, label: 'Trending' },
+    { path: '/admin/trending', icon: TrendingUp, label: 'Trending' },
     { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
     { path: '/admin/processed-orders', icon: Tags, label: 'Processed Orders' },
+    {path: '/admin/shipped-orders', icon: ShoppingCart, label: 'Shipped Orders' },
+    {path: '/admin/delivered-orders', icon: ShoppingCart, label: 'Delivered Orders' },
     { path: '/admin/customers', icon: Users, label: 'Customers' },
     { path: '/admin/offers', icon: Percent, label: 'Offers' },
     {path: '/admin/create-offer', icon: Percent, label: 'Create Offer' },
