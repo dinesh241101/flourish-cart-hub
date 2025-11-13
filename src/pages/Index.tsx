@@ -4,6 +4,8 @@ import HeroSection from "@/components/HeroSection";
 import CategoryGrid from "@/components/CategoryGrid";
 import ProductGrid from "@/components/ProductGrid";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import AIChatbot from "@/components/AIChatbot";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -190,6 +192,8 @@ const Index = () => {
         </div>
       </section>
       </main>
+      <Footer />
+      <AIChatbot />
     </div>
   );
 };
