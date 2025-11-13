@@ -11,16 +11,16 @@ import {
   Settings,
   FolderTree,
   TrendingUp,
-  FolderCheck
+  FolderCheck,
+  Home
 } from 'lucide-react';
-import CategoryCard from '../CategoryCard';
-import path from 'path';
 
 const AdminSidebar = () => {
   const location = useLocation();
 
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/admin/home-config', icon: Home, label: 'Home Config' },
     { path: '/admin/categories', icon: FolderTree, label: 'Categories' },
     {path: '/admin/add-category', icon: FolderCheck, label: 'Add Category' },
     { path: '/admin/products', icon: Package, label: 'Products' },

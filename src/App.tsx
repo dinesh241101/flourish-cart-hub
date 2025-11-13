@@ -31,6 +31,9 @@ import CategoryProducts from "@/pages/CategoryProducts";
 import ProductPage from './pages/ProductPage';
 import ShippedOrders from './pages/admin/ShippedOrders';
 import DeliveredOrders from './pages/admin/DeliveredOrders';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import HomeConfig from './pages/admin/HomeConfig';
 // import CategoryPage from './pages/CategoryPage';
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,16 +56,15 @@ const App = () => {
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/trending" element={<Trending />} />
                 <Route path="/categories" element={<CategoriesLanding />} />
                 <Route path="/category/:id" element={<CategoryProducts />} />
                 <Route path='/product/:productId' element={<ProductPage />} />
                 <Route path="/category" element={<CategoriesLanding />} />
-                {/* <Route path="/category/:id" element={<CategoryPage />} /> */}
                 <Route path="/all-categories" element={<CategoriesLanding />} /> 
-                {/* <Route path="/category" element={<CategoryLanding />} /> */}
-                
                 
                 {/* Protected Admin Routes */}
                 <Route path="/admin" element={<AdminLayout />}>
@@ -85,7 +87,7 @@ const App = () => {
                   <Route path="create-offer" element={<CreateOffer />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="/admin/categories" element={<AdminCategories />} />
+                  <Route path="home-config" element={<HomeConfig />} />
                 </Route>
                 
                 {/* Catch all routes */}
