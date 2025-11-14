@@ -1,11 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
-
-
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -13,10 +10,6 @@ export default function AdminCategories() {
   const [description, setDescription] = useState("");
   const [parentId, setParentId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   // Fetch categories
   const fetchCategories = async () => {
@@ -51,7 +44,6 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
           name,
           description,
           parent_id: parentId || null,
-          updated_at: new Date(),
         })
         .eq("id", editingId);
     } else {

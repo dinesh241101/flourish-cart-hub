@@ -64,7 +64,7 @@ const CartPage: React.FC = () => {
   const loadCart = async (user: any) => {
     if (user) {
       // load from DB cart table for the user
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("cart")
         .select(`*, products(*)`)
         .eq("session_id", user.id)
@@ -145,7 +145,7 @@ const CartPage: React.FC = () => {
     const user = session?.session?.user;
     if (user) {
       // update DB cart
-      const { data: existing } = await supabase
+      const { data: existing } = await (supabase as any)
         .from("cart")
         .select("*")
         .eq("session_id", user.id)
@@ -172,7 +172,8 @@ const CartPage: React.FC = () => {
     const { data: session } = await supabase.auth.getSession();
     const user = session?.session?.user;
     if (user) {
-      const { error } = await supabase.from("cart").delete().eq("session_id", user.id).eq("product_id", productId);
+      const deleteQuery: any = (supabase as any).from("cart").delete();
+      const { error } = await deleteQuery.eq("session_id", user.id).eq("product_id", productId);
       if (error) {
         toast({ title: "Error", description: "Failed to remove item", variant: "destructive" });
       } else {

@@ -42,12 +42,12 @@ const AddProductForm: React.FC<ProductFormProps> = ({ productId }) => {
         setDescription(data.description || "");
         setMrp(data.mrp || 0);
         setSalePrice(data.sale_price || 0);
-        setFeatures(data.features || []);
-        setSimilarProducts(data.similar_products || []);
+        setFeatures(Array.isArray(data.features) ? data.features as string[] : []);
+        setSimilarProducts(Array.isArray(data.similar_products) ? data.similar_products as string[] : []);
         setImageUrls(data.image_url ? [data.image_url] : []);
-        setVideoUrls(data.videos || []);
-        setImages(data.images || []);
-        setVideos(data.videos || []);
+        setVideoUrls(Array.isArray(data.videos) ? data.videos as string[] : []);
+        setImages(Array.isArray(data.images) ? data.images as string[] : []);
+        setVideos(Array.isArray(data.videos) ? data.videos as string[] : []);
       }
     };
     fetchProduct();
@@ -58,8 +58,10 @@ const AddProductForm: React.FC<ProductFormProps> = ({ productId }) => {
       name,
       code,
       description,
+      price: salePrice, // Required field
       mrp,
       sale_price: salePrice,
+      base_price: salePrice,
       features,
       similar_products: similarProducts,
       image_url: imageUrls[0] || "",
@@ -71,9 +73,9 @@ const AddProductForm: React.FC<ProductFormProps> = ({ productId }) => {
 
     let response;
     if (productId) {
-      response = await supabase.from("products").update(payload).eq("id", productId);
+      response = await supabase.from("products").update(payload as any).eq("id", productId);
     } else {
-      response = await supabase.from("products").insert([payload]);
+      response = await supabase.from("products").insert([payload as any]);
     }
 
     if (response.error) {

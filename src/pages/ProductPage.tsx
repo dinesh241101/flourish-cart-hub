@@ -82,9 +82,18 @@ const ProductPage: React.FC = () => {
         .single();
 
       if (error) throw error;
-      setProduct(data as Product);
-      // get related lists
-      fetchSimilarAndRelated(data);
+      if (data) {
+        const productData: any = data;
+        const processedProduct = {
+          ...productData,
+          images: Array.isArray(productData.images) ? productData.images as string[] : [],
+          videos: Array.isArray(productData.videos) ? productData.videos as string[] : [],
+          features: Array.isArray(productData.features) ? productData.features as string[] : [],
+          similar_products: Array.isArray(productData.similar_products) ? productData.similar_products as string[] : []
+        };
+        setProduct(processedProduct);
+        fetchSimilarAndRelated(processedProduct);
+      }
       checkIfInCart(id);
     } catch (err) {
       console.error("Error loading product:", err);
@@ -104,7 +113,13 @@ const ProductPage: React.FC = () => {
           .select("*")
           .in("id", p.similar_products)
           .limit(8);
-        similar = data || [];
+        similar = (data || []).map(item => ({
+          ...item,
+          images: (item.images as string[]) || [],
+          videos: (item.videos as string[]) || [],
+          features: (item.features as string[]) || [],
+          similar_products: (item.similar_products as string[]) || [],
+        })) as Product[];
       } else if (p?.category_id) {
         const { data } = await supabase
           .from("products")
@@ -112,7 +127,13 @@ const ProductPage: React.FC = () => {
           .eq("category_id", p.category_id)
           .neq("id", p.id)
           .limit(8);
-        similar = data || [];
+        similar = (data || []).map(item => ({
+          ...item,
+          images: (item.images as any as string[]) || [],
+          videos: (item.videos as any as string[]) || [],
+          features: (item.features as any as string[]) || [],
+          similar_products: (item.similar_products as any as string[]) || [],
+        })) as Product[];
       }
 
       // you may also like: random products from same category/subcategory
@@ -124,7 +145,13 @@ const ProductPage: React.FC = () => {
         .limit(8);
 
       setSimilarProducts(similar);
-      setYouMayLike(also || []);
+      setYouMayLike((also || []).map(item => ({
+        ...item,
+        images: (item.images as any as string[]) || [],
+        videos: (item.videos as any as string[]) || [],
+        features: (item.features as any as string[]) || [],
+        similar_products: (item.similar_products as any as string[]) || [],
+      })) as Product[]);
     } catch (err) {
       console.error("Error fetching related products", err);
     }
@@ -151,11 +178,11 @@ const ProductPage: React.FC = () => {
       const user = session?.session?.user;
       if (user) {
         // server-side: check cart rows for this user (assumes cart table has user_id or session mapping)
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("cart")
           .select("*")
           .eq("product_id", id)
-          .eq("session_id", user.id) // using session_id to store user id — adapt to your schema
+          .eq("session_id", user.id)
           .limit(1);
 
         if (error) throw error;
@@ -185,7 +212,7 @@ const ProductPage: React.FC = () => {
           quantity: qty,
         };
         // upsert pattern: check existing
-        const { data: existing } = await supabase
+        const { data: existing } = await (supabase as any)
           .from("cart")
           .select("*")
           .eq("product_id", product.id)

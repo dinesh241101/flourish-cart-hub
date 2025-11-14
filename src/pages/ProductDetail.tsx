@@ -91,10 +91,17 @@ const ProductDetail = () => {
         .single();
 
       if (error) throw error;
-      setProduct(data);
+      const productData = {
+        ...data,
+        images: Array.isArray(data.images) ? data.images as string[] : null,
+        videos: Array.isArray(data.videos) ? data.videos as string[] : null,
+        features: Array.isArray(data.features) ? data.features as string[] : null,
+        similar_products: Array.isArray(data.similar_products) ? data.similar_products as string[] : null
+      };
+      setProduct(productData);
       
-      if (data.similar_products && data.similar_products.length > 0) {
-        fetchSimilarProducts(data.similar_products);
+      if (productData.similar_products && productData.similar_products.length > 0) {
+        fetchSimilarProducts(productData.similar_products);
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -114,11 +121,10 @@ const ProductDetail = () => {
         .from("product_reviews")
         .select("*")
         .eq("product_id", id)
-        .eq("is_approved", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setReviews(data || []);
+      setReviews(data as any || []);
     } catch (error) {
       console.error("Error fetching reviews:", error);
     }
@@ -137,7 +143,13 @@ const ProductDetail = () => {
         .limit(4);
 
       if (error) throw error;
-      setSimilarProducts(data || []);
+      setSimilarProducts((data || []).map(p => ({
+        ...p,
+        images: Array.isArray(p.images) ? p.images as string[] : null,
+        videos: Array.isArray(p.videos) ? p.videos as string[] : null,
+        features: Array.isArray(p.features) ? p.features as string[] : null,
+        similar_products: Array.isArray(p.similar_products) ? p.similar_products as string[] : null
+      })));
     } catch (error) {
       console.error("Error fetching similar products:", error);
     }

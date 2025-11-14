@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router"; // for navigation
+import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import CategoryGrid from "@/components/CategoryGrid";
 import ProductGrid from "@/components/ProductGrid";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import AIChatbot from "@/components/AIChatbot";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +16,7 @@ const Index = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -33,7 +35,8 @@ const Index = () => {
           products (
             id,
             name,
-            price,
+            sale_price,
+            mrp,
             image_url,
             stock_quantity
           )
@@ -83,8 +86,9 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
 
-      {/* Hero Section */}
-      <HeroSection />
+      <main>
+        {/* Hero Section */}
+        <HeroSection />
 
       {/* Active Offers */}
       {offers.length > 0 && (
@@ -145,7 +149,7 @@ const Index = () => {
               </div>
               <Button
                 variant="outline"
-                onClick={() => router.push(`/category/${category.id}`)}
+                onClick={() => navigate(`/category/${category.id}`)}
               >
                 View All
               </Button>
@@ -187,6 +191,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+      </main>
+      <Footer />
+      <AIChatbot />
     </div>
   );
 };

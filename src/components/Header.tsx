@@ -47,6 +47,8 @@ const Header = ({ onMenuClick }: HeaderProps) => {
               <Home className="h-4 w-4" />
               <span>Home</span>
             </Link>
+
+
             <Link 
               to="/categories" 
               className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
@@ -56,6 +58,8 @@ const Header = ({ onMenuClick }: HeaderProps) => {
               <Grid3X3 className="h-4 w-4" />
               <span>Categories</span>
             </Link>
+
+
             <Link 
               to="/trending" 
               className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
@@ -80,10 +84,19 @@ const Header = ({ onMenuClick }: HeaderProps) => {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2">
+
+            <Link to = "/login">
+
             <Button variant="ghost" size="sm" className="hidden sm:flex">
               <User className="h-5 w-5" />
               <span className="ml-2 hidden lg:inline">Account</span>
+
+
+
             </Button>
+            </Link>
+
+
             <Link to="/cart">
               <Button variant="ghost" size="sm" className="relative">
                 <ShoppingCart className="h-5 w-5" />

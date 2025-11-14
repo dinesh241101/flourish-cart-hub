@@ -92,7 +92,10 @@ const CategoryProduct: React.FC = () => {
         .order("created_at", { ascending: false }); // latest first
 
       if (prodError) throw prodError;
-      const prods = productsData || [];
+      const prods = (productsData || []).map(p => ({
+        ...p,
+        images: Array.isArray(p.images) ? p.images as string[] : null
+      }));
       setAllProducts(prods);
 
       const pmap: Record<string, Product[]> = {};
@@ -241,7 +244,9 @@ const CategoryProduct: React.FC = () => {
                 return (
                   <section
                     key={cat.id}
-                    ref={(el: HTMLDivElement | null) => (productSectionRefs.current[cat.id] = el)}
+                    ref={(el: HTMLDivElement | null) => {
+                      if (el) productSectionRefs.current[cat.id] = el;
+                    }}
                     data-section-id={cat.id}
                     className="mb-10"
                   >
