@@ -156,8 +156,14 @@ const Products = () => {
 
     try {
       const productData = {
-        ...formData,
+        name: formData.name,
+        code: formData.code,
+        description: formData.description,
+        product_type: formData.product_type,
+        sku_code: formData.sku_code,
+        cloth_type: formData.cloth_type,
         category_id: formData.category_id || null,
+        price: Number(formData.sale_price), // Required field
         mrp: Number(formData.mrp),
         sale_price: Number(formData.sale_price),
         base_price: Number(formData.base_price),
@@ -171,7 +177,7 @@ const Products = () => {
       if (editingProduct) {
         const { error } = await supabase
           .from("products")
-          .update(productData)
+          .update(productData as any)
           .eq("id", editingProduct.id);
 
         if (error) throw error;
@@ -183,7 +189,7 @@ const Products = () => {
       } else {
         const { error } = await supabase
           .from("products")
-          .insert([productData]);
+          .insert([productData as any]);
 
         if (error) throw error;
 
