@@ -54,7 +54,7 @@ const Settings = () => {
       if (error) throw error;
 
       const configMap: Record<string, string> = {};
-      data?.forEach((item: WebsiteConfig) => {
+      data?.forEach((item: any) => {
         configMap[item.key] = item.value;
       });
 

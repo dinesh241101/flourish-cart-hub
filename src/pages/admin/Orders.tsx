@@ -83,9 +83,9 @@ const Orders = () => {
       const { data, error } = await query;
       if (error) throw error;
 
-      setOrders((data || []).map(order => ({
+      setOrders((data as any || []).map((order: any) => ({
         ...order,
-        status: order.status as OrderStatus,
+        status: order.status,
         customers: order.customers || null
       })));
     } catch (error) {
