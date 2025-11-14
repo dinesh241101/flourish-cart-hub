@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 const AuthPage = () => {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -28,13 +27,12 @@ const AuthPage = () => {
     address: "",
   });
 
-  // Signup changes
-  const handleSignupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSignupChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 🔵 Login handler
-  const handleLogin = async (e: React.FormEvent) => {
+  // LOGIN
+  const handleLogin = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
@@ -46,7 +44,7 @@ const AuthPage = () => {
 
       if (error) throw error;
 
-      toast({ title: "Success", description: "Logged in successfully" });
+      toast({ title: "Success", description: "Logged in" });
       navigate("/");
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -55,8 +53,8 @@ const AuthPage = () => {
     }
   };
 
-  // 🟢 Signup handler
-  const handleSignup = async (e: React.FormEvent) => {
+  // SIGNUP
+  const handleSignup = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
@@ -68,9 +66,8 @@ const AuthPage = () => {
 
       if (error) throw error;
 
-      toast({ title: "Success", description: "Account created successfully" });
-
-      navigate("/login");
+      toast({ title: "Success", description: "Account created" });
+      setMode("login");
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
@@ -79,54 +76,65 @@ const AuthPage = () => {
   };
 
   return (
-    <div
-      className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden"
-      style={{
-        background: "linear-gradient(135deg, #6a11cb, #2575fc)",
-      }}
-    >
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/40 to-blue-500/40 animate-pulse blur-3xl opacity-60"></div>
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden">
 
-      <Card className="relative w-full max-w-2xl backdrop-blur-xl bg-white/10 border-white/20 shadow-2xl rounded-3xl">
-        <CardContent className="p-8">
-          
-          {/* Toggle Buttons */}
-          <div className="flex justify-center mb-8 gap-2 bg-white/10 p-1 rounded-full">
-            <button
-              onClick={() => setMode("login")}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                mode === "login"
-                  ? "bg-white text-black shadow"
-                  : "text-white opacity-70"
-              }`}
-            >
-              Sign In
-            </button>
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]" />
+      <div className="absolute w-[700px] h-[700px] bg-purple-500/20 rounded-full blur-[160px] animate-pulse" />
+      <div className="absolute w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[160px] animate-pulse delay-300" />
 
-            <button
-              onClick={() => setMode("signup")}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                mode === "signup"
-                  ? "bg-white text-black shadow"
-                  : "text-white opacity-70"
-              }`}
-            >
-              Sign Up
-            </button>
-          </div>
+      <Card className="relative z-10 w-full max-w-xl bg-white/10 border-white/20 backdrop-blur-2xl shadow-2xl rounded-2xl p-6 md:p-10">
 
-          {/* ---------------- LOGIN FORM ---------------- */}
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-semibold text-white mb-1 tracking-tight">
+            {mode === "login" ? "Welcome Back 👋" : "Create Your Account ✨"}
+          </h2>
+          <p className="text-white/70 text-sm">
+            {mode === "login"
+              ? "Login to access your dashboard"
+              : "Sign up to get started"}
+          </p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex w-full bg-white/10 rounded-xl p-1 mb-8">
+          <button
+            onClick={() => setMode("login")}
+            className={`w-1/2 py-2 rounded-lg transition-all ${
+              mode === "login"
+                ? "bg-white text-black shadow"
+                : "text-white/70"
+            }`}
+          >
+            Sign In
+          </button>
+
+          <button
+            onClick={() => setMode("signup")}
+            className={`w-1/2 py-2 rounded-lg transition-all ${
+              mode === "signup"
+                ? "bg-white text-black shadow"
+                : "text-white/70"
+            }`}
+          >
+            Sign Up
+          </button>
+        </div>
+
+        <CardContent className="p-0">
+
+          {/* LOGIN */}
           {mode === "login" && (
-            <form onSubmit={handleLogin} className="space-y-4 animate-fadeIn">
+            <form onSubmit={handleLogin} className="space-y-5 animate-fadeIn">
               <div>
                 <Label className="text-white">Email</Label>
                 <Input
+                  className="bg-white/10 border-white/20 text-white placeholder-white/40 focus:ring-purple-400"
+                  placeholder="you@example.com"
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="bg-white/20 border-white/30 text-white placeholder-white/70"
                   required
                 />
               </div>
@@ -134,32 +142,33 @@ const AuthPage = () => {
               <div>
                 <Label className="text-white">Password</Label>
                 <Input
+                  className="bg-white/10 border-white/20 text-white placeholder-white/40 focus:ring-purple-400"
+                  placeholder="••••••••"
                   type="password"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="bg-white/20 border-white/30 text-white placeholder-white/70"
                   required
                 />
               </div>
 
-              <div className="flex items-center justify-between text-sm text-white/90">
-                <Link to="/forgot-password" className="hover:underline">
+              <div className="flex justify-between text-sm text-white/70">
+                <Link to="/forgot-password" className="hover:text-white underline">
                   Forgot password?
                 </Link>
               </div>
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+              <Button className="w-full bg-purple-600 hover:bg-purple-700">
                 {loading ? "Logging in..." : "Login"}
               </Button>
             </form>
           )}
 
-          {/* ---------------- SIGNUP FORM ---------------- */}
+          {/* SIGNUP */}
           {mode === "signup" && (
-            <form onSubmit={handleSignup} className="space-y-4 animate-fadeIn">
+            <form onSubmit={handleSignup} className="space-y-5 animate-fadeIn">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+                {/* All fields EXACTLY SAME */}
                 {[
                   "name",
                   "email",
@@ -170,37 +179,39 @@ const AuthPage = () => {
                   "pincode",
                 ].map((field) => (
                   <div key={field}>
-                    <Label className="capitalize text-white">{field}</Label>
+                    <Label className="text-white capitalize">{field}</Label>
                     <Input
                       name={field}
                       type={field === "password" ? "password" : "text"}
-                      placeholder={`Enter ${field}`}
                       value={(formData as any)[field]}
                       onChange={handleSignupChange}
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70"
+                      placeholder={`Enter ${field}`}
+                      className="bg-white/10 border-white/20 text-white placeholder-white/40"
                       required
                     />
                   </div>
                 ))}
 
+                {/* Address */}
                 <div className="md:col-span-2">
                   <Label className="text-white">Address</Label>
                   <Input
                     name="address"
-                    placeholder="Enter full address"
                     value={formData.address}
                     onChange={handleSignupChange}
-                    className="bg-white/20 border-white/30 text-white placeholder-white/70"
+                    placeholder="Enter your full address"
+                    className="bg-white/10 border-white/20 text-white placeholder-white/40"
                     required
                   />
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                {loading ? "Creating account..." : "Sign Up"}
+              <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                {loading ? "Creating..." : "Sign Up"}
               </Button>
             </form>
           )}
+
         </CardContent>
       </Card>
     </div>
