@@ -43,7 +43,7 @@ const AdminSidebar = () => {
   ];
 
   return (
-    <div className="fixed left-0 top-16 h-full w-64 bg-white shadow-lg z-30">
+    <div className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white shadow-lg z-30 overflow-y-auto">
       <div className="p-4">
         <nav className="space-y-2">
           {menuItems.map((item) => {
