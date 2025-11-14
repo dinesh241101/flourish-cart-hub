@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Send
 } from 'lucide-react';
+import { animate } from 'framer-motion';
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -37,6 +38,7 @@ const AdminSidebar = () => {
     { path: '/admin/complaints', icon: MessageSquare, label: 'Complaints' },
     { path: '/admin/offers', icon: Percent, label: 'Offers' },
     {path: '/admin/create-offer', icon: Percent, label: 'Create Offer' },
+    { path: '/admin/home-config', icon: Home, label: 'Home Config' },
     { path: '/admin/whatsapp-notifications', icon: Send, label: 'WhatsApp Notifications' },
     { path: '/admin/analytics', icon: LayoutDashboard, label: 'Analytics' },
     { path: '/admin/settings', icon: Settings, label: 'Settings' },

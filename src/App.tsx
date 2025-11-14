@@ -31,11 +31,13 @@ import CategoryProducts from "@/pages/CategoryProducts";
 import ProductPage from './pages/ProductPage';
 import ShippedOrders from './pages/admin/ShippedOrders';
 import DeliveredOrders from './pages/admin/DeliveredOrders';
-import Login from './pages/Login';
 import Signup from './pages/Signup';
 import HomeConfig from './pages/admin/HomeConfig';
 import Complaints from './pages/admin/Complaints';
 import WhatsAppNotifications from './pages/admin/WhatsAppNotifications';
+import AuthPage from './pages/AuthPage';
+import ForgotPassword from './pages/ForgotPassword';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -57,7 +59,6 @@ const App = () => {
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Index />} />
-                <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/trending" element={<Trending />} />
@@ -66,6 +67,9 @@ const App = () => {
                 <Route path='/product/:productId' element={<ProductPage />} />
                 <Route path="/category" element={<CategoriesLanding />} />
                 <Route path="/all-categories" element={<CategoriesLanding />} /> 
+                <Route path="/login" element={<AuthPage />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
+
                 
                 {/* Protected Admin Routes */}
                 <Route path="/admin" element={<AdminLayout />}>
