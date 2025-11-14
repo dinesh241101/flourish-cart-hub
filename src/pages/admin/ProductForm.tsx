@@ -58,8 +58,10 @@ const AddProductForm: React.FC<ProductFormProps> = ({ productId }) => {
       name,
       code,
       description,
+      price: salePrice, // Required field
       mrp,
       sale_price: salePrice,
+      base_price: salePrice,
       features,
       similar_products: similarProducts,
       image_url: imageUrls[0] || "",
@@ -71,9 +73,9 @@ const AddProductForm: React.FC<ProductFormProps> = ({ productId }) => {
 
     let response;
     if (productId) {
-      response = await supabase.from("products").update(payload).eq("id", productId);
+      response = await supabase.from("products").update(payload as any).eq("id", productId);
     } else {
-      response = await supabase.from("products").insert([payload]);
+      response = await supabase.from("products").insert([payload as any]);
     }
 
     if (response.error) {

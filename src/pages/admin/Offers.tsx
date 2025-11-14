@@ -104,6 +104,7 @@ const Offers = () => {
     try {
       const offerData = {
         ...formData,
+        offer_name: formData.title, // Required field
         discount_value: Number(formData.discount_value),
         min_order_amount: Number(formData.min_order_amount),
         max_discount_amount: formData.max_discount_amount ? Number(formData.max_discount_amount) : null,
@@ -113,7 +114,7 @@ const Offers = () => {
       if (editingOffer) {
         const { error } = await supabase
           .from('offers')
-          .update(offerData)
+          .update(offerData as any)
           .eq('id', editingOffer.id);
         
         if (error) throw error;
@@ -125,7 +126,7 @@ const Offers = () => {
       } else {
         const { error } = await supabase
           .from('offers')
-          .insert([offerData]);
+          .insert([offerData as any]);
         
         if (error) throw error;
         

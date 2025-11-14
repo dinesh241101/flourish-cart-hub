@@ -59,11 +59,11 @@ const Cart = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setCartItems((data || []).map(item => ({
+      setCartItems((data as any || []).map((item: any) => ({
         ...item,
         products: item.products ? {
           ...item.products,
-          images: Array.isArray(item.products.images) ? item.products.images as string[] : null
+          images: Array.isArray(item.products.images) ? item.products.images : null
         } : undefined
       })));
     } catch (error) {
