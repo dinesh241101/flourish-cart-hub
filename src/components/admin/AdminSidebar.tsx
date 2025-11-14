@@ -12,7 +12,9 @@ import {
   FolderTree,
   TrendingUp,
   FolderCheck,
-  Home
+  Home,
+  MessageSquare,
+  Send
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -32,8 +34,10 @@ const AdminSidebar = () => {
     {path: '/admin/shipped-orders', icon: ShoppingCart, label: 'Shipped Orders' },
     {path: '/admin/delivered-orders', icon: ShoppingCart, label: 'Delivered Orders' },
     { path: '/admin/customers', icon: Users, label: 'Customers' },
+    { path: '/admin/complaints', icon: MessageSquare, label: 'Complaints' },
     { path: '/admin/offers', icon: Percent, label: 'Offers' },
     {path: '/admin/create-offer', icon: Percent, label: 'Create Offer' },
+    { path: '/admin/whatsapp-notifications', icon: Send, label: 'WhatsApp Notifications' },
     { path: '/admin/analytics', icon: LayoutDashboard, label: 'Analytics' },
     { path: '/admin/settings', icon: Settings, label: 'Settings' },
   ];

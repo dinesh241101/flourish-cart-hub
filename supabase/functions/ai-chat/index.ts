@@ -12,23 +12,65 @@ serve(async (req) => {
   }
 
   try {
-    const { message, history } = await req.json();
+    const { message, history, action, complaintData, imageData } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    // Build conversation history
+    // Handle complaint registration
+    if (action === 'register_complaint' && complaintData) {
+      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+      const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+      
+      const { data, error } = await supabase
+        .from('complaints')
+        .insert({
+          customer_id: complaintData.customerId,
+          product_id: complaintData.productId,
+          order_id: complaintData.orderId,
+          complaint_text: complaintData.text,
+          image_urls: complaintData.imageUrls || [],
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return new Response(
+        JSON.stringify({ 
+          response: 'Complaint registered successfully! Your complaint ID is: ' + data.id,
+          complaintId: data.id
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Build conversation history with enhanced system prompt
     const messages = [
       {
         role: 'system',
         content: `You are a helpful AI assistant for BMS Store, an e-commerce fashion platform. 
         You can help with:
-        1. Product recommendations - suggest products based on user preferences
-        2. Complaint registration - help users register complaints about delivered products
-        3. Product search - help users find products they're looking for
-        4. General shopping assistance
+        1. Product recommendations - suggest products based on user preferences and trends
+        2. Complaint registration - help users register complaints about delivered products, collect details like product, order ID, and issue description
+        3. AI-powered product search - understand natural language queries to find products
+        4. General shopping assistance and answers about orders, shipping, returns
+        
+        When a user wants to register a complaint:
+        - Ask for the order ID, product name, and description of the issue
+        - Be empathetic and professional
+        - Collect any additional details needed
+        - Let them know their complaint will be registered
+        
+        For product recommendations:
+        - Ask about preferences (style, color, size, occasion)
+        - Provide specific product suggestions
+        - Consider trending items
         
         Be friendly, helpful, and concise in your responses.`
       },

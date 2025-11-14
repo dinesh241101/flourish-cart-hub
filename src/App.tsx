@@ -34,7 +34,8 @@ import DeliveredOrders from './pages/admin/DeliveredOrders';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import HomeConfig from './pages/admin/HomeConfig';
-// import CategoryPage from './pages/CategoryPage';
+import Complaints from './pages/admin/Complaints';
+import WhatsAppNotifications from './pages/admin/WhatsAppNotifications';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -88,6 +89,8 @@ const App = () => {
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="home-config" element={<HomeConfig />} />
+                  <Route path="complaints" element={<Complaints />} />
+                  <Route path="whatsapp-notifications" element={<WhatsAppNotifications />} />
                 </Route>
                 
                 {/* Catch all routes */}
