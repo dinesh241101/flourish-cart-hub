@@ -49,17 +49,17 @@ const Cart = () => {
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error }: any = await supabase
         .from("cart")
         .select(`
           *,
           products (name, code, sale_price, mrp, image_url, images, stock_quantity)
         `)
         .eq("session_id", sessionId)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false});
 
       if (error) throw error;
-      setCartItems((data as any || []).map((item: any) => ({
+      setCartItems((data || []).map((item: any) => ({
         ...item,
         products: item.products ? {
           ...item.products,

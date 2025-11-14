@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { MessageCircle, X, Send, Upload } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,20 +21,54 @@ const AIChatbot = () => {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
 
-    const userMessage = input;
+    const newImages: string[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newImages.push(reader.result as string);
+        if (newImages.length === files.length) {
+          setUploadedImages(prev => [...prev, ...newImages]);
+          toast({
+            title: 'Images uploaded',
+            description: `${files.length} image(s) uploaded successfully`
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSend = async () => {
+    if (!input.trim() && uploadedImages.length === 0) return;
+
+    const userMessage = input + (uploadedImages.length > 0 ? ` [${uploadedImages.length} image(s) attached]` : '');
+    const currentImages = [...uploadedImages];
     setInput('');
+    setUploadedImages([]);
     setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
     setLoading(true);
 
     try {
       // Call edge function for AI processing
       const { data, error } = await supabase.functions.invoke('ai-chat', {
-        body: { message: userMessage, history: messages },
+        body: { 
+          message: input,
+          history: messages,
+          imageData: currentImages.length > 0 ? currentImages : null
+        },
       });
 
       if (error) throw error;
@@ -58,7 +92,7 @@ const AIChatbot = () => {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg"
+        className="fixed bottom-6 right-6 rounded-full w-14 h-14 shadow-lg z-50"
         size="icon"
       >
         <MessageCircle className="h-6 w-6" />
@@ -67,7 +101,7 @@ const AIChatbot = () => {
   }
 
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-[500px] shadow-xl flex flex-col">
+    <Card className="fixed bottom-6 right-6 w-96 h-[500px] shadow-xl flex flex-col z-50">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-lg">AI Assistant</CardTitle>
         <Button
@@ -110,12 +144,47 @@ const AIChatbot = () => {
             </div>
           )}
         </div>
+
+        {uploadedImages.length > 0 && (
+          <div className="px-2 py-2 border-t bg-muted/20">
+            <div className="flex gap-2 flex-wrap">
+              {uploadedImages.map((img, idx) => (
+                <div key={idx} className="relative group">
+                  <img src={img} alt={`Upload ${idx + 1}`} className="h-16 w-16 object-cover rounded" />
+                  <button
+                    onClick={() => removeImage(idx)}
+                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex space-x-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={loading}
+          >
+            <Upload className="h-4 w-4" />
+          </Button>
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Type your message..."
+            placeholder="Type your message or upload images..."
             disabled={loading}
           />
           <Button onClick={handleSend} disabled={loading} size="icon">

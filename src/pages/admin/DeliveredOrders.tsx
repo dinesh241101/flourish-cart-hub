@@ -63,7 +63,7 @@ const DeliveredOrders = () => {
         .order('delivered_at', { ascending: false });
 
       if (error) throw error;
-      setOrders(data || []);
+      setOrders(data as any || []);
     } catch (error) {
       console.error('Error fetching delivered orders:', error);
       toast({

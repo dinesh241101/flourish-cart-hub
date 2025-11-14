@@ -178,11 +178,11 @@ const ProductPage: React.FC = () => {
       const user = session?.session?.user;
       if (user) {
         // server-side: check cart rows for this user (assumes cart table has user_id or session mapping)
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("cart")
           .select("*")
           .eq("product_id", id)
-          .eq("session_id", user.id) // using session_id to store user id — adapt to your schema
+          .eq("session_id", user.id)
           .limit(1);
 
         if (error) throw error;
@@ -212,7 +212,7 @@ const ProductPage: React.FC = () => {
           quantity: qty,
         };
         // upsert pattern: check existing
-        const { data: existing } = await supabase
+        const { data: existing } = await (supabase as any)
           .from("cart")
           .select("*")
           .eq("product_id", product.id)
