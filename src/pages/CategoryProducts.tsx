@@ -59,7 +59,7 @@ const CategoryProducts = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6">
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-5">
           {products.map((p, index) => (
@@ -138,7 +138,7 @@ const CategoryProducts = () => {
             No products found in this category.
           </p>
         )}
-      </div>
+      </main>
     </div>
   );
 };

@@ -76,7 +76,7 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden">
+    <main className="min-h-screen w-full flex items-center justify-center relative overflow-hidden">
 
       {/* Animated Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]" />
@@ -214,7 +214,7 @@ const AuthPage = () => {
 
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 };
 

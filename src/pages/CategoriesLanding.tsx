@@ -43,7 +43,7 @@ const CategoriesLanding = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-100">
       <Header />
 
-      <div className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6">
         {/* Page Title */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -98,7 +98,7 @@ const CategoriesLanding = () => {
             No categories available.
           </p>
         )}
-      </div>
+      </main>
     </div>
   );
 };
