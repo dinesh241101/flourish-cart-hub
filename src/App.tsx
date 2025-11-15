@@ -13,7 +13,6 @@ import AdminCategories from "./pages/admin/AdminCategories";
 import Products from "./pages/admin/Products";
 import Orders from "./pages/admin/Orders";
 import Customers from "./pages/admin/Customers";
-import Offers from "./pages/admin/Offers";
 import Settings from "./pages/admin/Settings";
 import Analytics from "./pages/admin/Analytics";
 import ProcessedOrders from "./pages/admin/ProcessedOrders";
@@ -33,12 +32,15 @@ import ShippedOrders from './pages/admin/ShippedOrders';
 import DeliveredOrders from './pages/admin/DeliveredOrders';
 import Signup from './pages/Signup';
 import HomeConfig from './pages/admin/HomeConfig';
+import HeroConfig from './pages/admin/HeroConfig';
 import Complaints from './pages/admin/Complaints';
 import WhatsAppNotifications from './pages/admin/WhatsAppNotifications';
 import AuthPage from './pages/AuthPage';
 import ForgotPassword from './pages/ForgotPassword';
 import Cart from './pages/Cart';
 import CartPage from './pages/CartPage';
+import OffersPage from './pages/Offers';
+import AdminOffers from "./pages/admin/Offers";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +74,7 @@ const App = () => {
                 <Route path="/login" element={<AuthPage />} />
                 <Route path='/forgot-password' element={<ForgotPassword />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/offers" element={<OffersPage />} />
                 
                 {/* Protected Admin Routes */}
                 <Route path="/admin" element={<AdminLayout />}>
@@ -90,12 +93,13 @@ const App = () => {
                   <Route path="shipped-orders" element={<ShippedOrders />} />
                   <Route path="delivered-orders" element={<DeliveredOrders />} />
                   <Route path="customers" element={<Customers />} />
-                  <Route path="offers" element={<Offers />} />
+                  <Route path="offers" element={<AdminOffers />} />
                   <Route path="create-offer" element={<CreateOffer />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="home-config" element={<HomeConfig />} />
-                  <Route path="complaints" element={<Complaints />} />
+                <Route path="home-config" element={<HomeConfig />} />
+                <Route path="hero-config" element={<HeroConfig />} />
+                <Route path="complaints" element={<Complaints />} />
                   <Route path="whatsapp-notifications" element={<WhatsAppNotifications />} />
                 </Route>
                 

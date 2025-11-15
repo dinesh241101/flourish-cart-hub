@@ -25,6 +25,8 @@ const CartPage: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [offers, setOffers] = useState<any[]>([]);
   const [appliedOffer, setAppliedOffer] = useState<any | null>(null);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -99,13 +101,62 @@ const CartPage: React.FC = () => {
         .from("offers")
         .select("*")
         .eq("is_active", true)
-        .gte("start_date", new Date().toISOString()) // optionally handle
+        .lte("start_date", new Date().toISOString())
+        .gte("end_date", new Date().toISOString())
         .order("created_at", { ascending: false });
 
       setOffers(data || []);
     } catch (err) {
       console.error("Error loading offers", err);
     }
+  };
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      toast({ title: "Error", description: "Please enter a coupon code", variant: "destructive" });
+      return;
+    }
+
+    setCouponLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("offers")
+        .select("*")
+        .eq("coupon_code", couponCode.trim().toUpperCase())
+        .eq("is_active", true)
+        .lte("start_date", new Date().toISOString())
+        .gte("end_date", new Date().toISOString())
+        .single();
+
+      if (error || !data) {
+        toast({ title: "Invalid Coupon", description: "Coupon code is not valid or has expired", variant: "destructive" });
+        return;
+      }
+
+      // Check minimum order amount
+      const minAmount = Number(data.min_order_amount || 0);
+      if (subtotal < minAmount) {
+        toast({
+          title: "Minimum Order Not Met",
+          description: `Minimum order amount of ₹${minAmount} required for this coupon`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setAppliedOffer(data);
+      toast({ title: "Success", description: "Coupon applied successfully!" });
+      setCouponCode('');
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to apply coupon", variant: "destructive" });
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedOffer(null);
+    toast({ title: "Removed", description: "Coupon removed" });
   };
 
   // compute totals

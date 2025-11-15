@@ -13,74 +13,51 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 import { Sparkles, TrendingUp, Star, ShoppingBag } from "lucide-react";
+import { useHomeConfig, useCategories, useOffers } from "@/hooks/useHomeConfig";
 
 const Index = () => {
   const [categories, setCategories] = useState<any[]>([]);
-  const [offers, setOffers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const { data: homeConfig, isLoading: configLoading } = useHomeConfig();
+  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
+  const { data: offersData, isLoading: offersLoading } = useOffers();
+
   useEffect(() => {
-    fetchHomepageData();
-  }, []);
+    fetchProducts();
+  }, [categoriesData]);
 
-  // -----------------------------------------------------
-  // FIXED CATEGORY + PRODUCTS FETCHING
-  // -----------------------------------------------------
-  const fetchHomepageData = async () => {
-    try {
-      // FIX 1: clean join instead of relation shorthand
-      const { data: categoryData, error: categoryErr } = await supabase
-        .from("categories")
-        .select("id, name, image_url, is_active")
-        .eq("is_active", true);
+  const fetchProducts = async () => {
+    if (!categoriesData) return;
+    
+    const finalCategories = [];
+    for (let cat of categoriesData) {
+      const { data: products } = await supabase
+        .from("products")
+        .select("id, name, sale_price, mrp, image_url, stock_quantity, category_id")
+        .eq("category_id", cat.id)
+        .limit(10);
 
-      if (categoryErr) {
-        console.error("Category fetch error:", categoryErr);
-      }
-
-      // fetch products for each category FIX 2
-      const finalCategories = [];
-
-      for (let cat of categoryData || []) {
-        const { data: products } = await supabase
-          .from("products")
-          .select("id, name, sale_price, mrp, image_url, stock_quantity, category_id")
-          .eq("category_id", cat.id)
-          .limit(10);
-
-        finalCategories.push({
-          ...cat,
-          products: products || [],
-        });
-      }
-
-      // fetch offers
-      const { data: offerData } = await supabase
-        .from("offers")
-        .select("*")
-        .eq("is_active", true)
-        .gte("end_date", new Date().toISOString());
-
-      setCategories(finalCategories);
-      setOffers(offerData || []);
-    } catch (e) {
-      console.error("Homepage load error:", e);
-    } finally {
-      setLoading(false);
+      finalCategories.push({
+        ...cat,
+        products: products || [],
+      });
     }
+    setCategories(finalCategories);
   };
 
-  // -----------------------------------------------------
-  // SKELETON LOADING
-  // -----------------------------------------------------
+  const loading = configLoading || categoriesLoading || offersLoading;
+  const showCategories = homeConfig?.show_categories ?? true;
+  const showOffers = homeConfig?.show_offers ?? true;
+  const offers = offersData || [];
+
   if (loading) {
     return (
-      <div className="animate-pulse p-8 space-y-10">
-        <div className="h-64 bg-gray-200 rounded-xl" />
+      <div className="animate-pulse p-4 md:p-8 space-y-10">
+        <div className="h-48 md:h-64 bg-gray-200 rounded-xl" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="h-40 bg-gray-200 rounded-xl"></div>
+            <div key={n} className="h-32 md:h-40 bg-gray-200 rounded-xl"></div>
           ))}
         </div>
       </div>
@@ -98,36 +75,36 @@ const Index = () => {
         <HeroSection />
 
         {/* OFFERS */}
-        {offers.length > 0 && (
-          <section className="py-12 px-4">
+        {showOffers && offers.length > 0 && (
+          <section className="py-8 md:py-12 px-4">
             <div className="container mx-auto">
               <div className="flex items-center gap-2 mb-6">
-                <Sparkles className="h-6 w-6 text-primary" />
-                <h2 className="text-2xl font-bold">Special Offers</h2>
+                <Sparkles className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                <h2 className="text-xl md:text-2xl font-bold">Special Offers</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {offers.map((offer) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {offers.slice(0, 6).map((offer) => (
                   <motion.div
                     key={offer.id}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
                   >
-                    <Card className="shadow-lg rounded-2xl bg-white/70 backdrop-blur-md">
-                      <CardContent className="p-6">
-                        <Badge>
+                    <Card className="shadow-lg rounded-2xl bg-white/70 backdrop-blur-md hover:shadow-xl transition-shadow">
+                      <CardContent className="p-4 md:p-6">
+                        <Badge className="mb-3">
                           {offer.offer_type === "percentage"
                             ? `${offer.discount_value}%`
                             : `₹${offer.discount_value}`}{" "}
                           OFF
                         </Badge>
 
-                        <h3 className="text-xl font-semibold mt-3">
+                        <h3 className="text-lg md:text-xl font-semibold mt-3">
                           {offer.title}
                         </h3>
 
-                        <p className="text-sm text-gray-600 mt-2">
+                        <p className="text-xs md:text-sm text-gray-600 mt-2 line-clamp-2">
                           {offer.description}
                         </p>
                       </CardContent>
@@ -135,21 +112,30 @@ const Index = () => {
                   </motion.div>
                 ))}
               </div>
+              
+              {offers.length > 6 && (
+                <div className="text-center mt-6">
+                  <Button onClick={() => navigate('/offers')} variant="outline">
+                    View All Offers
+                  </Button>
+                </div>
+              )}
             </div>
           </section>
         )}
 
         {/* CATEGORIES GRID */}
-        <section className="py-12 px-4">
-          <div className="container mx-auto">
+        {showCategories && (
+          <section className="py-8 md:py-12 px-4">
+            <div className="container mx-auto">
 
             <div className="flex items-center gap-2 mb-8">
-              <TrendingUp className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-bold">Browse Categories</h2>
+              <TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+              <h2 className="text-xl md:text-2xl font-bold">Browse Categories</h2>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              {categories.map((cat, index) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+              {categoriesData?.map((cat, index) => (
                 <motion.div
                   key={cat.id}
                   initial={{ opacity: 0, y: 30 }}
@@ -158,15 +144,16 @@ const Index = () => {
                 >
                   <div
                     onClick={() => navigate(`/category/${cat.id}`)}
-                    className="cursor-pointer rounded-2xl bg-white shadow-md overflow-hidden 
+                    className="cursor-pointer rounded-xl md:rounded-2xl bg-white shadow-md overflow-hidden 
                     hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
                   >
                     <img
                       src={cat.image_url || "/placeholder.jpg"}
-                      className="h-32 w-full object-cover"
+                      className="h-28 md:h-32 w-full object-cover"
+                      alt={cat.name}
                     />
 
-                    <div className="p-3 text-center font-semibold">
+                    <div className="p-2 md:p-3 text-center font-semibold text-sm md:text-base">
                       {cat.name}
                     </div>
                   </div>
@@ -176,9 +163,10 @@ const Index = () => {
 
           </div>
         </section>
+        )}
 
         {/* CATEGORY PRODUCTS */}
-        {categories.map((cat) => (
+        {showCategories && categories.map((cat) => (
           <section key={cat.id} className="py-12 px-4 bg-gray-50">
             <div className="container mx-auto">
               <div className="flex justify-between items-center mb-6">
