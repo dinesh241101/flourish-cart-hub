@@ -37,6 +37,8 @@ import Complaints from './pages/admin/Complaints';
 import WhatsAppNotifications from './pages/admin/WhatsAppNotifications';
 import AuthPage from './pages/AuthPage';
 import ForgotPassword from './pages/ForgotPassword';
+import Cart from './pages/Cart';
+import CartPage from './pages/CartPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,7 +71,7 @@ const App = () => {
                 <Route path="/all-categories" element={<CategoriesLanding />} /> 
                 <Route path="/login" element={<AuthPage />} />
                 <Route path='/forgot-password' element={<ForgotPassword />} />
-
+                <Route path="/cart" element={<CartPage />} />
                 
                 {/* Protected Admin Routes */}
                 <Route path="/admin" element={<AdminLayout />}>

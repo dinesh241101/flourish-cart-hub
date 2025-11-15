@@ -196,7 +196,7 @@ const CartPage: React.FC = () => {
     if (!user) {
       // redirect to login (assume /auth/login)
       toast({ title: "Login required", description: "Please login to proceed to checkout" });
-      navigate("/auth/login?redirect=/cart");
+      navigate("/login?redirect=/cart");
       return;
     }
 
@@ -221,6 +221,9 @@ const CartPage: React.FC = () => {
     );
   }
 
+  const onxNow = () => {
+    onBuyNow();
+  };
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -235,7 +238,7 @@ const CartPage: React.FC = () => {
                 <CardContent className="text-center">
                   <p className="text-lg">Your cart is empty.</p>
                   <div className="mt-4">
-                    <Link to="/"><Button>Shop Now</Button></Link>
+                    <Link to="/categories"><Button>Shop Now</Button></Link>
                   </div>
                 </CardContent>
               </Card>
@@ -274,7 +277,7 @@ const CartPage: React.FC = () => {
                     <div className="font-medium">Login / Signup to unlock more offers</div>
                     <div className="text-sm text-muted-foreground">Login to save your cart and get personalized offers.</div>
                   </div>
-                  <Button onClick={() => navigate("/auth/login?redirect=/cart")}>Login / Signup</Button>
+                  <Button onClick={() => navigate("/login?redirect=/cart")}>Login / Signup</Button>
                 </CardContent>
               </Card>
             )}
@@ -310,7 +313,7 @@ const CartPage: React.FC = () => {
                 )}
 
                 <div className="mt-4">
-                  <Button className="w-full" onClick={onBuyNow}>Buy Now</Button>
+                  <Button className="w-full" onClick={onxNow}>Buy Now</Button>
                 </div>
               </CardContent>
             </Card>
