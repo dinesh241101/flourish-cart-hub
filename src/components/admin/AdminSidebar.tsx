@@ -11,32 +11,39 @@ import {
   Settings,
   FolderTree,
   TrendingUp,
-  FolderCheck
+  FolderCheck,
+  Home,
+  MessageSquare,
+  Send
 } from 'lucide-react';
-import CategoryCard from '../CategoryCard';
-
 const AdminSidebar = () => {
   const location = useLocation();
 
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/admin/home-config', icon: Home, label: 'Home Config' },
     { path: '/admin/categories', icon: FolderTree, label: 'Categories' },
     {path: '/admin/add-category', icon: FolderCheck, label: 'Add Category' },
     { path: '/admin/products', icon: Package, label: 'Products' },
     {path: '/admin/add-product', icon: Package, label: 'Add Product' },
     { path: '/admin/inventory', icon: Package, label: 'Inventory' },
-    { path: '/admin/trending-products', icon: TrendingUp, label: 'Trending' },
+    { path: '/admin/trending', icon: TrendingUp, label: 'Trending' },
     { path: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
     { path: '/admin/processed-orders', icon: Tags, label: 'Processed Orders' },
+    {path: '/admin/shipped-orders', icon: ShoppingCart, label: 'Shipped Orders' },
+    {path: '/admin/delivered-orders', icon: ShoppingCart, label: 'Delivered Orders' },
     { path: '/admin/customers', icon: Users, label: 'Customers' },
+    { path: '/admin/complaints', icon: MessageSquare, label: 'Complaints' },
     { path: '/admin/offers', icon: Percent, label: 'Offers' },
     {path: '/admin/create-offer', icon: Percent, label: 'Create Offer' },
+    { path: '/admin/home-config', icon: Home, label: 'Home Config' },
+    { path: '/admin/whatsapp-notifications', icon: Send, label: 'WhatsApp Notifications' },
     { path: '/admin/analytics', icon: LayoutDashboard, label: 'Analytics' },
     { path: '/admin/settings', icon: Settings, label: 'Settings' },
   ];
 
   return (
-    <div className="fixed left-0 top-16 h-full w-64 bg-white shadow-lg z-30">
+    <div className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white shadow-lg z-30 overflow-y-auto">
       <div className="p-4">
         <nav className="space-y-2">
           {menuItems.map((item) => {

@@ -69,8 +69,8 @@ const ProcessedOrders = () => {
         .not("processed_at", "is", null);
 
       if (error) throw error;
-      setOrders(data || []);
-      setFilteredOrders(data || []);
+      setOrders(data as any || []);
+      setFilteredOrders(data as any || []);
     } catch (error: any) {
       toast({
         title: "Error",

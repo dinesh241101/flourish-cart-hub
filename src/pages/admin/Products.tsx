@@ -117,7 +117,13 @@ const Products = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setProducts(data || []);
+      setProducts((data || []).map(p => ({
+        ...p,
+        images: Array.isArray(p.images) ? p.images as string[] : null,
+        videos: Array.isArray(p.videos) ? p.videos as string[] : null,
+        features: Array.isArray(p.features) ? p.features as string[] : null,
+        similar_products: Array.isArray(p.similar_products) ? p.similar_products as string[] : null
+      })));
     } catch (error) {
       console.error("Error fetching products:", error);
       toast({
@@ -150,8 +156,14 @@ const Products = () => {
 
     try {
       const productData = {
-        ...formData,
+        name: formData.name,
+        code: formData.code,
+        description: formData.description,
+        product_type: formData.product_type,
+        sku_code: formData.sku_code,
+        cloth_type: formData.cloth_type,
         category_id: formData.category_id || null,
+        price: Number(formData.sale_price), // Required field
         mrp: Number(formData.mrp),
         sale_price: Number(formData.sale_price),
         base_price: Number(formData.base_price),
@@ -165,7 +177,7 @@ const Products = () => {
       if (editingProduct) {
         const { error } = await supabase
           .from("products")
-          .update(productData)
+          .update(productData as any)
           .eq("id", editingProduct.id);
 
         if (error) throw error;
@@ -177,7 +189,7 @@ const Products = () => {
       } else {
         const { error } = await supabase
           .from("products")
-          .insert([productData]);
+          .insert([productData as any]);
 
         if (error) throw error;
 
@@ -280,13 +292,13 @@ const Products = () => {
       base_price: product.base_price,
       stock_quantity: product.stock_quantity,
       category_id: product.category_id || "",
-      images: product.images || [""],
-      videos: product.videos || [""],
+      images: (Array.isArray(product.images) ? product.images : [""]) as string[],
+      videos: (Array.isArray(product.videos) ? product.videos : [""]) as string[],
       product_type: product.product_type || "",
       sku_code: product.sku_code || "",
       cloth_type: product.cloth_type || "",
-      features: product.features || [""],
-      similar_products: product.similar_products || [],
+      features: (Array.isArray(product.features) ? product.features : [""]) as string[],
+      similar_products: (Array.isArray(product.similar_products) ? product.similar_products : []) as string[],
     });
     setIsDialogOpen(true);
   };

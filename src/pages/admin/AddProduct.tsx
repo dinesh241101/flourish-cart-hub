@@ -44,7 +44,13 @@ const AdminProducts: React.FC = () => {
         supabase.from("products").select("*").order("created_at", { ascending: false }),
         supabase.from("categories").select("*").order("sort_order", { ascending: false }),
       ]);
-      setProducts(prodData || []);
+      setProducts((prodData || []).map(p => ({
+        ...p,
+        images: Array.isArray(p.images) ? p.images as string[] : null,
+        videos: Array.isArray(p.videos) ? p.videos as string[] : null,
+        features: Array.isArray(p.features) ? p.features as string[] : null,
+        similar_products: Array.isArray(p.similar_products) ? p.similar_products as string[] : null
+      })));
       setCategories(cats || []);
     } catch (err) {
       console.error(err);

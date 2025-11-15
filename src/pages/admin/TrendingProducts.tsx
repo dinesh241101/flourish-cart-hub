@@ -86,7 +86,7 @@ const TrendingProducts = () => {
         .order("sort_order", { ascending: true });
 
       if (error) throw error;
-      setTrendingProducts(data || []);
+      setTrendingProducts(data as any || []);
     } catch (error) {
       console.error("Error fetching trending products:", error);
       toast({
@@ -150,7 +150,7 @@ const TrendingProducts = () => {
     try {
       const { error } = await supabase
         .from("trending_products")
-        .update({ is_active: !currentStatus })
+        .update({ status: !currentStatus ? 'active' : 'inactive' } as any)
         .eq("id", id);
 
       if (error) throw error;

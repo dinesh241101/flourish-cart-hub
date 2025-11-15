@@ -29,8 +29,17 @@ import ProductForm from './pages/admin/ProductForm';
 import CategoriesLanding from "@/pages/CategoriesLanding";
 import CategoryProducts from "@/pages/CategoryProducts";
 import ProductPage from './pages/ProductPage';
-import CategoryLanding from '@/pages/CategoriesLanding';
-// import CategoryPage from './pages/CategoryPage';
+import ShippedOrders from './pages/admin/ShippedOrders';
+import DeliveredOrders from './pages/admin/DeliveredOrders';
+import Signup from './pages/Signup';
+import HomeConfig from './pages/admin/HomeConfig';
+import Complaints from './pages/admin/Complaints';
+import WhatsAppNotifications from './pages/admin/WhatsAppNotifications';
+import AuthPage from './pages/AuthPage';
+import ForgotPassword from './pages/ForgotPassword';
+import Cart from './pages/Cart';
+import CartPage from './pages/CartPage';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -52,16 +61,17 @@ const App = () => {
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Index />} />
+                <Route path="/signup" element={<Signup />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/trending" element={<Trending />} />
                 <Route path="/categories" element={<CategoriesLanding />} />
                 <Route path="/category/:id" element={<CategoryProducts />} />
-                <Route path='/product/:id' element={<ProductPage />} />
+                <Route path='/product/:productId' element={<ProductPage />} />
                 <Route path="/category" element={<CategoriesLanding />} />
-                {/* <Route path="/category/:id" element={<CategoryPage />} /> */}
                 <Route path="/all-categories" element={<CategoriesLanding />} /> 
-                {/* <Route path="/category" element={<CategoryLanding />} /> */}
-                
+                <Route path="/login" element={<AuthPage />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route path="/cart" element={<CartPage />} />
                 
                 {/* Protected Admin Routes */}
                 <Route path="/admin" element={<AdminLayout />}>
@@ -69,25 +79,28 @@ const App = () => {
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="categories" element={<AdminCategories />} />
                   <Route path="add-category" element={<AddCategory />} />
-                  <Route path="/admin/products/add" element={<ProductForm />} />
-                  <Route path="/admin/products/edit/:productId" element={<ProductForm />} />
+                  <Route path="products/add" element={<ProductForm />} />
+                  <Route path="products/edit/:productId" element={<ProductForm />} />
                   <Route path="products" element={<Products />} />
                   <Route path="add-product" element={<AddProduct />} />
                   <Route path='inventory' element={<Inventory />} />
                   <Route path='trending' element={<TrendingProducts />} />
                   <Route path="orders" element={<Orders />} />
                   <Route path="processed-orders" element={<ProcessedOrders />} />
+                  <Route path="shipped-orders" element={<ShippedOrders />} />
+                  <Route path="delivered-orders" element={<DeliveredOrders />} />
                   <Route path="customers" element={<Customers />} />
                   <Route path="offers" element={<Offers />} />
                   <Route path="create-offer" element={<CreateOffer />} />
                   <Route path="analytics" element={<Analytics />} />
                   <Route path="settings" element={<Settings />} />
-                  <Route path="/admin/categories" element={<AdminCategories />} />
+                  <Route path="home-config" element={<HomeConfig />} />
+                  <Route path="complaints" element={<Complaints />} />
+                  <Route path="whatsapp-notifications" element={<WhatsAppNotifications />} />
                 </Route>
                 
-                {/* Catch all route */}
+                {/* Catch all routes */}
                 <Route path="*" element={<NotFound />} />
-                <Route path="/admin/*" element={<AdminNotFound />} />
               </Routes>
             </BrowserRouter>
           </TooltipProvider>

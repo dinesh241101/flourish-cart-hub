@@ -51,7 +51,7 @@ const Trending = () => {
 
   const fetchTrendingProducts = async () => {
     try {
-      let query = supabase
+      let query = (supabase as any)
         .from("trending_products")
         .select(`
           *,
@@ -87,7 +87,13 @@ const Trending = () => {
       const { data, error } = await query;
 
       if (error) throw error;
-      setTrendingProducts(data || []);
+      setTrendingProducts((data || []).map((item: any) => ({
+        ...item,
+        products: item.products ? {
+          ...item.products,
+          images: Array.isArray(item.products.images) ? item.products.images as string[] : null
+        } : undefined
+      })));
     } catch (error) {
       console.error("Error fetching trending products:", error);
       toast({

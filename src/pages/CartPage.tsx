@@ -64,7 +64,7 @@ const CartPage: React.FC = () => {
   const loadCart = async (user: any) => {
     if (user) {
       // load from DB cart table for the user
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("cart")
         .select(`*, products(*)`)
         .eq("session_id", user.id)
@@ -145,7 +145,7 @@ const CartPage: React.FC = () => {
     const user = session?.session?.user;
     if (user) {
       // update DB cart
-      const { data: existing } = await supabase
+      const { data: existing } = await (supabase as any)
         .from("cart")
         .select("*")
         .eq("session_id", user.id)
@@ -172,7 +172,8 @@ const CartPage: React.FC = () => {
     const { data: session } = await supabase.auth.getSession();
     const user = session?.session?.user;
     if (user) {
-      const { error } = await supabase.from("cart").delete().eq("session_id", user.id).eq("product_id", productId);
+      const deleteQuery: any = (supabase as any).from("cart").delete();
+      const { error } = await deleteQuery.eq("session_id", user.id).eq("product_id", productId);
       if (error) {
         toast({ title: "Error", description: "Failed to remove item", variant: "destructive" });
       } else {
@@ -195,7 +196,7 @@ const CartPage: React.FC = () => {
     if (!user) {
       // redirect to login (assume /auth/login)
       toast({ title: "Login required", description: "Please login to proceed to checkout" });
-      navigate("/auth/login?redirect=/cart");
+      navigate("/login?redirect=/cart");
       return;
     }
 
@@ -220,6 +221,9 @@ const CartPage: React.FC = () => {
     );
   }
 
+  const onxNow = () => {
+    onBuyNow();
+  };
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -234,7 +238,7 @@ const CartPage: React.FC = () => {
                 <CardContent className="text-center">
                   <p className="text-lg">Your cart is empty.</p>
                   <div className="mt-4">
-                    <Link to="/"><Button>Shop Now</Button></Link>
+                    <Link to="/categories"><Button>Shop Now</Button></Link>
                   </div>
                 </CardContent>
               </Card>
@@ -273,7 +277,7 @@ const CartPage: React.FC = () => {
                     <div className="font-medium">Login / Signup to unlock more offers</div>
                     <div className="text-sm text-muted-foreground">Login to save your cart and get personalized offers.</div>
                   </div>
-                  <Button onClick={() => navigate("/auth/login?redirect=/cart")}>Login / Signup</Button>
+                  <Button onClick={() => navigate("/login?redirect=/cart")}>Login / Signup</Button>
                 </CardContent>
               </Card>
             )}
@@ -309,7 +313,7 @@ const CartPage: React.FC = () => {
                 )}
 
                 <div className="mt-4">
-                  <Button className="w-full" onClick={onBuyNow}>Buy Now</Button>
+                  <Button className="w-full" onClick={onxNow}>Buy Now</Button>
                 </div>
               </CardContent>
             </Card>

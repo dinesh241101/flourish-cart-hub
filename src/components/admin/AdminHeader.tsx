@@ -20,7 +20,7 @@ const AdminHeader = () => {
       <div className="flex items-center justify-between h-full px-6">
         <div className="flex items-center space-x-4">
           <div className="bg-primary text-primary-foreground rounded-lg p-2 font-bold text-xl">
-            BMS
+            BMS Fashion
           </div>
           <h1 className="text-xl font-semibold text-gray-800">Admin Panel</h1>
         </div>
