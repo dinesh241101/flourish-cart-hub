@@ -3,100 +3,67 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
-import { Card } from "@/components/ui/card";
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  image_url: string;
-  is_active: boolean;
-}
 
 const CategoriesLanding = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCategories();
+    loadCategories();
   }, []);
 
-  const fetchCategories = async () => {
+  const loadCategories = async () => {
     try {
       const { data, error } = await supabase
         .from("categories")
-        .select("*")
+        .select("id, name, image_url")
         .eq("is_active", true)
-        .order("created_at", { ascending: false });
+        .order("sort_order", { ascending: true });
 
       if (error) throw error;
+
       setCategories(data || []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
+    } catch (err) {
+      console.error("Category loading error:", err);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-100">
+    <div className="min-h-screen bg-gray-50">
       <Header />
 
       <div className="container mx-auto px-4 py-6">
-        {/* Page Title */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-bold mb-6 text-gray-900"
-        >
-          Shop by Category
-        </motion.h1>
+        <h1 className="text-2xl font-bold mb-5">Browse Categories</h1>
 
-        {/* Loading State */}
-        {isLoading && (
-          <p className="text-center text-gray-500 animate-pulse">
-            Loading categories...
-          </p>
-        )}
-
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-          {categories.map((cat, i) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05 }}
-              whileHover={{ scale: 1.05 }}
-            >
-              <Card
-                className="cursor-pointer shadow-md hover:shadow-xl rounded-xl bg-white overflow-hidden border"
+        {loading ? (
+          <p className="animate-pulse text-gray-400">Loading categories...</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+            {categories.map((cat, index) => (
+              <motion.div
+                key={cat.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
                 onClick={() => navigate(`/category/${cat.id}`)}
+                className="cursor-pointer bg-white shadow-sm hover:shadow-xl border rounded-xl p-3 text-center transition-all"
               >
-                <div className="h-32 sm:h-36 w-full overflow-hidden">
+                <div className="w-full h-28 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
                   <img
                     src={cat.image_url || "/placeholder.svg"}
                     alt={cat.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover hover:scale-110 duration-500"
+                    className="object-contain h-full"
                   />
                 </div>
-
-                <div className="p-3 text-center">
-                  <h3 className="font-semibold text-gray-800 text-sm sm:text-base">
-                    {cat.name}
-                  </h3>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
-        {categories.length === 0 && !isLoading && (
-          <p className="text-center mt-10 text-gray-500">
-            No categories available.
-          </p>
+                <h3 className="mt-3 text-sm font-medium text-gray-800">
+                  {cat.name}
+                </h3>
+              </motion.div>
+            ))}
+          </div>
         )}
       </div>
     </div>
