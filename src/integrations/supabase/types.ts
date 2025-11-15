@@ -209,6 +209,48 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_config: {
+        Row: {
+          created_at: string | null
+          cta_link: string | null
+          cta_text: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          slide_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          cta_link?: string | null
+          cta_text?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          slide_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          cta_link?: string | null
+          cta_text?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          slide_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       home_config: {
         Row: {
           featured_category_ids: string[] | null
@@ -301,6 +343,7 @@ export type Database = {
       offers: {
         Row: {
           active: boolean | null
+          coupon_code: string | null
           created_at: string | null
           description: string | null
           discount: number | null
@@ -321,6 +364,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean | null
+          coupon_code?: string | null
           created_at?: string | null
           description?: string | null
           discount?: number | null
@@ -341,6 +385,7 @@ export type Database = {
         }
         Update: {
           active?: boolean | null
+          coupon_code?: string | null
           created_at?: string | null
           description?: string | null
           discount?: number | null

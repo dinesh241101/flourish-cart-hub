@@ -1,62 +1,60 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useHeroSlides } from '@/hooks/useHomeConfig';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { data: heroSlides, isLoading } = useHeroSlides();
+  const navigate = useNavigate();
 
-  // Fashion-focused hero slides
-  const heroSlides = [
+  // Default slides if none in database
+  const defaultSlides = [
     {
-      id: 1,
+      id: '1',
       title: "New Collection",
       subtitle: "Summer 2024",
-      description: "Discover our latest fashion trends and exclusive designs for the modern woman",
-      image: "",
-      cta: "Shop Collection"
+      description: "Discover our latest fashion trends and exclusive designs",
+      image_url: "",
+      cta_text: "Shop Collection",
+      cta_link: "/categories",
+      slide_order: 0,
     },
-    {
-      id: 2,
-      title: "Fashion Forward",
-      subtitle: "Trendy Styles",
-      description: "Elevate your style with our curated selection of premium fashion pieces",
-      image: "",
-      cta: "Explore Trends"
-    },
-    {
-      id: 3,
-      title: "Exclusive Deals",
-      subtitle: "Up to 50% Off",
-      description: "Limited time offers on your favorite fashion brands and styles",
-      image: "",
-      cta: "Shop Sale"
-    }
   ];
 
-  // Auto-scroll functionality
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 4000); // 4 seconds
-
-    return () => clearInterval(timer);
-  }, [heroSlides.length]);
+  const slides = (heroSlides && heroSlides.length > 0) ? heroSlides : defaultSlides;
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
   };
 
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  if (isLoading) {
+    return (
+      <section className="relative h-[400px] md:h-[600px] overflow-hidden bg-muted animate-pulse" />
+    );
+  }
+
   return (
-    <section className="relative h-[600px] overflow-hidden">
+    <section className="relative h-[400px] md:h-[600px] overflow-hidden">
       {/* Hero Slides */}
       <div className="relative w-full h-full">
         {heroSlides.map((slide, index) => (
@@ -69,7 +67,9 @@ const HeroSection = () => {
           >
             <div 
               className="w-full h-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${slide.image})` }}
+              style={{ 
+                backgroundImage: slide.image_url ? `url(${slide.image_url})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+              }}
             >
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/40"></div>
@@ -77,21 +77,25 @@ const HeroSection = () => {
               {/* Content */}
               <div className="relative container mx-auto px-4 h-full flex items-center">
                 <div className="max-w-lg text-white animate-fade-in">
-                  <p className="text-accent text-lg mb-2 font-medium">{slide.subtitle}</p>
-                  <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                  {slide.subtitle && (
+                    <p className="text-accent text-base md:text-lg mb-2 font-medium">{slide.subtitle}</p>
+                  )}
+                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight">
                     {slide.title}
                   </h1>
-                  <p className="text-xl mb-8 text-gray-200">
-                    {slide.description}
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Button className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8 py-3 group">
-                      <ShoppingBag className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                      {slide.cta}
-                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                    <Button variant="outline" className="text-lg px-8 py-3 bg-white/10 border-white/20 text-white hover:bg-white/20">
-                      View Lookbook
+                  {slide.description && (
+                    <p className="text-base md:text-xl mb-6 md:mb-8 text-gray-200">
+                      {slide.description}
+                    </p>
+                  )}
+                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                    <Button 
+                      className="bg-accent hover:bg-accent/90 text-accent-foreground text-base md:text-lg px-6 md:px-8 py-2 md:py-3 group"
+                      onClick={() => navigate(slide.cta_link || '/categories')}
+                    >
+                      <ShoppingBag className="mr-2 h-4 w-4 md:h-5 md:w-5 group-hover:scale-110 transition-transform" />
+                      {slide.cta_text || 'Shop Now'}
+                      <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </div>
