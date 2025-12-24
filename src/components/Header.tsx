@@ -97,7 +97,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
             </Link>
 
 
-            <Link to="/cart">
+            <Link to="/login">
               <Button variant="ghost" size="sm" className="relative">
                 <ShoppingCart className="h-5 w-5" />
                 <span className="ml-2 hidden lg:inline">Cart</span>

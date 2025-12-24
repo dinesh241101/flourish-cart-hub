@@ -40,6 +40,7 @@ const AdminSidebar = () => {
     { path: '/admin/whatsapp-notifications', icon: Send, label: 'WhatsApp Notifications' },
     { path: '/admin/analytics', icon: LayoutDashboard, label: 'Analytics' },
     { path: '/admin/settings', icon: Settings, label: 'Settings' },
+    {path: '/admin/hero-config', icon: MessageSquare, label: 'Hero Config' },
   ];
 
   return (
