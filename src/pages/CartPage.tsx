@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "@/components/Header";
@@ -356,10 +357,46 @@ const CartPage: React.FC = () => {
                   <div>₹{total.toFixed(2)}</div>
                 </div>
 
+                {/* Coupon Code Input */}
+                <div className="mt-4 space-y-2">
+                  <Label htmlFor="coupon" className="text-sm font-medium">Have a coupon?</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="coupon"
+                      placeholder="Enter coupon code"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      className="flex-1"
+                      disabled={!!appliedOffer}
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={applyCoupon}
+                      disabled={couponLoading || !!appliedOffer}
+                    >
+                      {couponLoading ? "Applying..." : "Apply"}
+                    </Button>
+                  </div>
+                </div>
+
                 {appliedOffer && (
-                  <div className="mt-3 p-3 bg-green-50 rounded">
-                    <div className="font-medium">Offer applied: {appliedOffer.title}</div>
-                    <div className="text-sm text-muted-foreground">Discount: {appliedOffer.offer_type === "percentage" ? `${appliedOffer.discount_value}%` : `₹${appliedOffer.discount_value}`}</div>
+                  <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-green-800">
+                          🎉 {appliedOffer.coupon_code || appliedOffer.title || 'Offer Applied'}
+                        </div>
+                        <div className="text-sm text-green-600">
+                          {appliedOffer.offer_type === "percentage" 
+                            ? `${appliedOffer.discount_value}% off` 
+                            : `₹${appliedOffer.discount_value} off`}
+                          {appliedOffer.description && ` - ${appliedOffer.description}`}
+                        </div>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={removeCoupon} className="text-red-500 hover:text-red-700">
+                        Remove
+                      </Button>
+                    </div>
                   </div>
                 )}
 
