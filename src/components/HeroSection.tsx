@@ -57,7 +57,7 @@ const HeroSection = () => {
     <section className="relative h-[400px] md:h-[600px] overflow-hidden">
       {/* Hero Slides */}
       <div className="relative w-full h-full">
-        {heroSlides.map((slide, index) => (
+        {slides.map((slide, index) => (
           <div
             key={slide.id}
             className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
@@ -124,7 +124,7 @@ const HeroSection = () => {
 
       {/* Dot Indicators */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
-        {heroSlides.map((_, index) => (
+        {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
