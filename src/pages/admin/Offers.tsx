@@ -37,6 +37,7 @@ interface Offer {
   id: string;
   title: string;
   description: string | null;
+  coupon_code: string | null;
   offer_type: 'percentage' | 'fixed_amount';
   discount_value: number;
   min_order_amount: number;
@@ -49,6 +50,15 @@ interface Offer {
   created_at: string;
 }
 
+const generateCouponCode = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 8; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+};
+
 const Offers = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,6 +67,7 @@ const Offers = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    coupon_code: '',
     offer_type: 'percentage' as 'percentage' | 'fixed_amount',
     discount_value: 0,
     min_order_amount: 0,
@@ -141,6 +152,7 @@ const Offers = () => {
       setFormData({
         title: '',
         description: '',
+        coupon_code: generateCouponCode(),
         offer_type: 'percentage',
         discount_value: 0,
         min_order_amount: 0,
@@ -215,6 +227,7 @@ const Offers = () => {
     setFormData({
       title: offer.title,
       description: offer.description || '',
+      coupon_code: offer.coupon_code || generateCouponCode(),
       offer_type: offer.offer_type,
       discount_value: offer.discount_value,
       min_order_amount: offer.min_order_amount,
@@ -231,6 +244,7 @@ const Offers = () => {
     setFormData({
       title: '',
       description: '',
+      coupon_code: generateCouponCode(),
       offer_type: 'percentage',
       discount_value: 0,
       min_order_amount: 0,
@@ -298,14 +312,36 @@ const Offers = () => {
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe your offer..."
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="coupon_code">Coupon Code</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="coupon_code"
+                      value={formData.coupon_code}
+                      onChange={(e) => setFormData({ ...formData, coupon_code: e.target.value.toUpperCase() })}
+                      placeholder="e.g., SUMMER20"
+                      required
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setFormData({ ...formData, coupon_code: generateCouponCode() })}
+                    >
+                      Generate
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Describe your offer..."
+                    className="h-10"
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -407,6 +443,7 @@ const Offers = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Offer</TableHead>
+                <TableHead>Coupon Code</TableHead>
                 <TableHead>Discount</TableHead>
                 <TableHead>Validity</TableHead>
                 <TableHead>Usage</TableHead>
@@ -424,6 +461,11 @@ const Offers = () => {
                         <div className="text-sm text-muted-foreground">{offer.description}</div>
                       )}
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    <code className="px-2 py-1 bg-muted rounded text-sm font-mono">
+                      {offer.coupon_code || 'N/A'}
+                    </code>
                   </TableCell>
                   <TableCell>
                     <div className="space-y-1">
