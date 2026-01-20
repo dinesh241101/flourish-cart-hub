@@ -41,6 +41,7 @@ import Cart from './pages/Cart';
 import CartPage from './pages/CartPage';
 import OffersPage from './pages/Offers';
 import AdminOffers from "./pages/admin/Offers";
+import CheckoutPage from './pages/CheckoutPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +75,7 @@ const App = () => {
                 <Route path="/login" element={<AuthPage />} />
                 <Route path='/forgot-password' element={<ForgotPassword />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/offers" element={<OffersPage />} />
                 
                 {/* Protected Admin Routes */}
